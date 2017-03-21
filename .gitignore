@@ -1,0 +1,7 @@
+athena
+
+*.log
+*.swp
+*.bak
+
+/.vagrant/machines/
