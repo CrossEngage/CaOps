@@ -28,8 +28,6 @@ sudo dpkg-reconfigure -f noninteractive cloud-init
 sudo apt-get purge chef chef-zero puppet puppet-common landscape-client landscape-common -y
 
 # Repos
-add-apt-repository ppa:webupd8team/java
-echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
 echo "deb http://www.apache.org/dist/cassandra/debian $CASSANDRA_RELEASE main" | \
 	sudo tee /etc/apt/sources.list.d/cassandra.sources.list
 wget -O - https://www.apache.org/dist/cassandra/KEYS | sudo apt-key add -
@@ -43,7 +41,7 @@ sudo apt-get upgrade -y && sudo apt-get dist-upgrade -y && sudo apt-get autoremo
 sudo apt-get install language-pack-en -y
 
 # Java
-sudo apt-get -y install oracle-java8-installer oracle-java8-set-default
+sudo apt-get -y install openjdk-8-jdk
 
 # Jolokia
 wget "https://repo1.maven.org/maven2/org/jolokia/jolokia-jvm/$JOLOKIA_VERSION/jolokia-jvm-$JOLOKIA_VERSION-agent.jar" \
