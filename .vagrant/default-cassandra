@@ -1,3 +1,3 @@
-export JVM_EXTRA_OPTS="-javaagent:/usr/share/java/jolokia-jvm-agent.jar=port=8778,host=localhost,discoveryEnabled=false"
+export JVM_EXTRA_OPTS="-javaagent:/usr/share/java/jolokia-jvm-agent.jar=port=8778,host=*,discoveryEnabled=false"
 export MAX_HEAP_SIZE="512M"
 export HEAP_NEWSIZE="128M"
