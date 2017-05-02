@@ -44,10 +44,13 @@ func (c *Client) List() {
 }
 
 // Version ...
-func (c *Client) Version() (readResp *ReadResponse, err error) {
+func (c *Client) Version() (versionResp *VersionResponse, err error) {
 	resp, err := c.HTTPClient.Get(c.getURL("/version"))
+	if err != nil {
+		return nil, err
+	}
 	dec := json.NewDecoder(resp.Body)
-	if err := dec.Decode(&readResp); err != nil {
+	if err := dec.Decode(&versionResp); err != nil {
 		return nil, err
 	}
 	return
