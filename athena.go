@@ -5,8 +5,10 @@ import (
 	"net/http"
 	"os"
 
-	"bitbucket.org/crossengage/athena/jolokia"
+	"bitbucket.org/crossengage/athena/cassandra"
+	"bitbucket.org/crossengage/athena/cassandra/jolokia"
 
+	"github.com/gocql/gocql"
 	logging "github.com/op/go-logging"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
@@ -25,8 +27,6 @@ var (
 	timeout           = app.Flag("timeout", "Connection timeout.").Short('t').Default("600ms").Duration()
 	sockKeepAlive     = app.Flag("keep-alive", "Socket keep-alive interval.").Short('k').Default("0").Duration()
 	reconnectInterval = app.Flag("reconnect-interval", "If > 0, attempt to reconnect known DOWN nodes every this").Short('R').Default("0").Duration()
-	noHostLookup      = app.Flag("no-host-lookup", "If set, it will connect only to the specified node.").Short('L').Bool()
-	enableSnappy      = app.Flag("snappy", "If set, use Snappy compression with Cassandra.").Short('S').Bool()
 
 	loggr = logging.MustGetLogger(appName)
 )
@@ -45,35 +45,35 @@ func init() {
 }
 
 func main() {
-	// cluster := gocql.NewCluster(hostIP.String())
-	// cluster.Port = *port
-	// // cluster.Keyspace = *keyspace
-	// cluster.ProtoVersion = *protoVer
-	// // cluster.Consistency = gocql.ParseConsistency(*consistency)
-	// cluster.Timeout = *timeout
-	// cluster.SocketKeepalive = *sockKeepAlive
-	// cluster.DisableInitialHostLookup = *noHostLookup
-	// // cluster.PageSize = *pageSize
-	// cluster.ReconnectInterval = *reconnectInterval
-	// // cluster.RetryPolicy = &gocql.SimpleRetryPolicy{NumRetries: *retries}
-	// if *enableSnappy {
-	// 	cluster.Compressor = gocql.SnappyCompressor{}
-	// }
+	cluster := gocql.NewCluster((*cqlAddr).IP.String())
+	cluster.Port = (*cqlAddr).Port
+	cluster.ProtoVersion = *protoVer
+	cluster.Consistency = gocql.ParseConsistency("QUORUM")
+	cluster.Timeout = *timeout
+	cluster.SocketKeepalive = *sockKeepAlive
+	cluster.DisableInitialHostLookup = true
+	cluster.ReconnectInterval = *reconnectInterval
+	cluster.RetryPolicy = &gocql.SimpleRetryPolicy{NumRetries: 3}
+	cluster.Compressor = gocql.SnappyCompressor{}
 
-	// session := startSession(cluster)
-	// defer session.Close()
-
-	client := jolokia.Client{
-		HTTPClient: http.DefaultClient,
-		BaseURL:    **jolokiaURL,
-	}
-
-	resp, err := client.Version()
+	session, err := cluster.CreateSession()
 	if err != nil {
-		loggr.Error("Error reading Jolokia version info:", err)
-	} else {
-		loggr.Infof("Jolokia version info: %#v", resp)
+		loggr.Fatal(err)
+	}
+	defer session.Close()
+
+	nodetool := cassandra.NodeTool{
+		JolokiaClient: jolokia.Client{
+			HTTPClient: http.DefaultClient,
+			BaseURL:    **jolokiaURL,
+		},
 	}
 
+	liveNodes, err := nodetool.LiveNodes()
+	if err != nil {
+		loggr.Fatal(err)
+	}
+
+	loggr.Infof("%#v", liveNodes)
 	loggr.Info("That's all folks!")
 }
