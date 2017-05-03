@@ -2,6 +2,7 @@ package jolokia
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/url"
 )
@@ -28,6 +29,9 @@ func (c *Client) ReadAttribute(path string) (attrResp *ReadAttributeResponse, er
 	if err := dec.Decode(&attrResp); err != nil {
 		return nil, err
 	}
+	if attrResp.Error != "" {
+		return attrResp, errors.New(attrResp.Error)
+	}
 	return
 }
 
@@ -40,6 +44,9 @@ func (c *Client) ReadStringListAttribute(path string) (attrResp *ReadStringListA
 	dec := json.NewDecoder(resp.Body)
 	if err := dec.Decode(&attrResp); err != nil {
 		return nil, err
+	}
+	if attrResp.Error != "" {
+		return attrResp, errors.New(attrResp.Error)
 	}
 	return
 }

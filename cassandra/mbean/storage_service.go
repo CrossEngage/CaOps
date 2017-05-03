@@ -1,11 +1,6 @@
 package mbean
 
-import (
-	"errors"
-	"log"
-
-	"bitbucket.org/crossengage/athena/cassandra/jolokia"
-)
+import "bitbucket.org/crossengage/athena/cassandra/jolokia"
 
 // StorageService is analogous to the original StorageService on Cassandra,
 // except that all JMX calls are made through a Jolokia agent.
@@ -20,29 +15,49 @@ const (
 // LiveNodes retrieve the list of live nodes in the cluster, where "liveness"
 // is determined by the failure detector of the node being queried.
 func (ss *StorageService) LiveNodes() (ips []string, err error) {
-	resp, err := ss.JolokiaClient.ReadAttribute(storageServicePath + "/LiveNodes")
-	if err == nil {
-		log.Printf("%#v", resp)
-		if arr, ok := resp.Value.([]string); ok {
-			return arr, nil
-		}
-		err = errors.New("Could not cast return to []string")
+	resp, err := ss.JolokiaClient.ReadStringListAttribute(storageServicePath + "/LiveNodes")
+	if err != nil {
+		return nil, err
 	}
-	return nil, err
+	return resp.Value, nil
 }
 
-// // Retrieve the list of unreachable nodes in the cluster, as determined
-// // by this node's failure detector.
-// func (ss *StorageService) UnreachableNodes() (ips []string) {}
+// UnreachableNodes retrieve the list of unreachable nodes in the cluster, as
+// determined by this node's failure detector.
+func (ss *StorageService) UnreachableNodes() (ips []string, err error) {
+	resp, err := ss.JolokiaClient.ReadStringListAttribute(storageServicePath + "/UnreachableNodes")
+	if err != nil {
+		return nil, err
+	}
+	return resp.Value, nil
+}
 
-// // Retrieve the list of nodes currently bootstrapping into the ring.
-// func (ss *StorageService) JoiningNodes() (ips []string) {}
+// JoiningNodes retrieve the list of nodes currently bootstrapping into the ring.
+func (ss *StorageService) JoiningNodes() (ips []string, err error) {
+	resp, err := ss.JolokiaClient.ReadStringListAttribute(storageServicePath + "/JoiningNodes")
+	if err != nil {
+		return nil, err
+	}
+	return resp.Value, nil
+}
 
-// // Retrieve the list of nodes currently leaving the ring.
-// func (ss *StorageService) LeavingNodes() (ips []string) {}
+// LeavingNodes retrieve the list of nodes currently leaving the ring.
+func (ss *StorageService) LeavingNodes() (ips []string, err error) {
+	resp, err := ss.JolokiaClient.ReadStringListAttribute(storageServicePath + "/LeavingNodes")
+	if err != nil {
+		return nil, err
+	}
+	return resp.Value, nil
+}
 
-// // Retrieve the list of nodes currently moving in the ring.
-// func (ss *StorageService) MovingNodes() (ips []string) {}
+// MovingNodes retrieve the list of nodes currently moving in the ring.
+func (ss *StorageService) MovingNodes() (ips []string, err error) {
+	resp, err := ss.JolokiaClient.ReadStringListAttribute(storageServicePath + "/MovingNodes")
+	if err != nil {
+		return nil, err
+	}
+	return resp.Value, nil
+}
 
 // // Fetch string representations of the tokens for this node.
 // func (ss *StorageService) Tokens() (tokens []string) {}
