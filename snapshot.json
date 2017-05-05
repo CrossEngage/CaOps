@@ -1,0 +1,207 @@
+{
+    "request": {
+        "attribute": "SnapshotDetails",
+        "mbean": "org.apache.cassandra.db:type=StorageService",
+        "type": "read"
+    },
+    "status": 200,
+    "timestamp": 1493910653,
+    "value": {
+        "1493808695890": {
+            "1493808695890": {
+                "system_auth": {
+                    "resource_role_permissons_index": {
+                        "0 bytes": {
+                            "13 bytes": {
+                                "Column family name": "resource_role_permissons_index",
+                                "Keyspace name": "system_auth",
+                                "Size on disk": "13 bytes",
+                                "Snapshot name": "1493808695890",
+                                "True size": "0 bytes"
+                            }
+                        }
+                    },
+                    "role_members": {
+                        "0 bytes": {
+                            "13 bytes": {
+                                "Column family name": "role_members",
+                                "Keyspace name": "system_auth",
+                                "Size on disk": "13 bytes",
+                                "Snapshot name": "1493808695890",
+                                "True size": "0 bytes"
+                            }
+                        }
+                    },
+                    "role_permissions": {
+                        "0 bytes": {
+                            "13 bytes": {
+                                "Column family name": "role_permissions",
+                                "Keyspace name": "system_auth",
+                                "Size on disk": "13 bytes",
+                                "Snapshot name": "1493808695890",
+                                "True size": "0 bytes"
+                            }
+                        }
+                    },
+                    "roles": {
+                        "0 bytes": {
+                            "4.81 KB": {
+                                "Column family name": "roles",
+                                "Keyspace name": "system_auth",
+                                "Size on disk": "4.81 KB",
+                                "Snapshot name": "1493808695890",
+                                "True size": "0 bytes"
+                            }
+                        }
+                    }
+                },
+                "system_distributed": {
+                    "parent_repair_history": {
+                        "0 bytes": {
+                            "13 bytes": {
+                                "Column family name": "parent_repair_history",
+                                "Keyspace name": "system_distributed",
+                                "Size on disk": "13 bytes",
+                                "Snapshot name": "1493808695890",
+                                "True size": "0 bytes"
+                            }
+                        }
+                    },
+                    "repair_history": {
+                        "0 bytes": {
+                            "13 bytes": {
+                                "Column family name": "repair_history",
+                                "Keyspace name": "system_distributed",
+                                "Size on disk": "13 bytes",
+                                "Snapshot name": "1493808695890",
+                                "True size": "0 bytes"
+                            }
+                        }
+                    }
+                },
+                "system_traces": {
+                    "events": {
+                        "0 bytes": {
+                            "13 bytes": {
+                                "Column family name": "events",
+                                "Keyspace name": "system_traces",
+                                "Size on disk": "13 bytes",
+                                "Snapshot name": "1493808695890",
+                                "True size": "0 bytes"
+                            }
+                        }
+                    },
+                    "sessions": {
+                        "0 bytes": {
+                            "13 bytes": {
+                                "Column family name": "sessions",
+                                "Keyspace name": "system_traces",
+                                "Size on disk": "13 bytes",
+                                "Snapshot name": "1493808695890",
+                                "True size": "0 bytes"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "testingtag": {
+            "testingtag": {
+                "system_auth": {
+                    "resource_role_permissons_index": {
+                        "0 bytes": {
+                            "13 bytes": {
+                                "Column family name": "resource_role_permissons_index",
+                                "Keyspace name": "system_auth",
+                                "Size on disk": "13 bytes",
+                                "Snapshot name": "testingtag",
+                                "True size": "0 bytes"
+                            }
+                        }
+                    },
+                    "role_members": {
+                        "0 bytes": {
+                            "13 bytes": {
+                                "Column family name": "role_members",
+                                "Keyspace name": "system_auth",
+                                "Size on disk": "13 bytes",
+                                "Snapshot name": "testingtag",
+                                "True size": "0 bytes"
+                            }
+                        }
+                    },
+                    "role_permissions": {
+                        "0 bytes": {
+                            "13 bytes": {
+                                "Column family name": "role_permissions",
+                                "Keyspace name": "system_auth",
+                                "Size on disk": "13 bytes",
+                                "Snapshot name": "testingtag",
+                                "True size": "0 bytes"
+                            }
+                        }
+                    },
+                    "roles": {
+                        "0 bytes": {
+                            "4.81 KB": {
+                                "Column family name": "roles",
+                                "Keyspace name": "system_auth",
+                                "Size on disk": "4.81 KB",
+                                "Snapshot name": "testingtag",
+                                "True size": "0 bytes"
+                            }
+                        }
+                    }
+                },
+                "system_distributed": {
+                    "parent_repair_history": {
+                        "0 bytes": {
+                            "13 bytes": {
+                                "Column family name": "parent_repair_history",
+                                "Keyspace name": "system_distributed",
+                                "Size on disk": "13 bytes",
+                                "Snapshot name": "testingtag",
+                                "True size": "0 bytes"
+                            }
+                        }
+                    },
+                    "repair_history": {
+                        "0 bytes": {
+                            "13 bytes": {
+                                "Column family name": "repair_history",
+                                "Keyspace name": "system_distributed",
+                                "Size on disk": "13 bytes",
+                                "Snapshot name": "testingtag",
+                                "True size": "0 bytes"
+                            }
+                        }
+                    }
+                },
+                "system_traces": {
+                    "events": {
+                        "0 bytes": {
+                            "13 bytes": {
+                                "Column family name": "events",
+                                "Keyspace name": "system_traces",
+                                "Size on disk": "13 bytes",
+                                "Snapshot name": "testingtag",
+                                "True size": "0 bytes"
+                            }
+                        }
+                    },
+                    "sessions": {
+                        "0 bytes": {
+                            "13 bytes": {
+                                "Column family name": "sessions",
+                                "Keyspace name": "system_traces",
+                                "Size on disk": "13 bytes",
+                                "Snapshot name": "testingtag",
+                                "True size": "0 bytes"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

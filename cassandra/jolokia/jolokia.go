@@ -1,8 +1,12 @@
 package jolokia
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
+	"io"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 )
@@ -16,86 +20,142 @@ type Client struct {
 func (c *Client) getURL(path string) string {
 	url := c.BaseURL
 	url.Path += path
+	log.Println(url.String())
 	return url.String()
 }
 
-// ReadAttribute ...
-func (c *Client) ReadAttribute(path string) (attrResp *ReadAttributeResponse, err error) {
-	resp, err := c.HTTPClient.Get(c.getURL("/read/" + path))
+// ReadInto ...
+func (c *Client) ReadInto(mbean string, response ValueResponse) (err error) {
+	resp, err := c.HTTPClient.Get(c.getURL("/read/" + mbean))
 	if err != nil {
-		return nil, err
+		return err
 	}
-	dec := json.NewDecoder(resp.Body)
-	if err := dec.Decode(&attrResp); err != nil {
-		return nil, err
+	if err := response.DecodeJSON(resp.Body); err != nil {
+		return err
 	}
-	if attrResp.Error != "" {
-		return attrResp, errors.New(attrResp.Error)
+	if err := response.Error(); err != nil {
+		return err
 	}
 	return
 }
 
-// ReadStringListAttribute ...
-func (c *Client) ReadStringListAttribute(path string) (attrResp *ReadStringListAttributeResponse, err error) {
-	resp, err := c.HTTPClient.Get(c.getURL("/read/" + path))
+// ReadStringList ...
+func (c *Client) ReadStringList(mbean string) (vr *StringListValueResponse, err error) {
+	resp, err := c.HTTPClient.Get(c.getURL("/read/" + mbean))
 	if err != nil {
 		return nil, err
 	}
 	dec := json.NewDecoder(resp.Body)
-	if err := dec.Decode(&attrResp); err != nil {
+	if err := dec.Decode(&vr); err != nil {
 		return nil, err
 	}
-	if attrResp.Error != "" {
-		return attrResp, errors.New(attrResp.Error)
+	if err := vr.Error(); err != nil {
+		return nil, err
 	}
 	return
 }
 
-// Write ...
-func (c *Client) Write() {
+// ReadString ...
+func (c *Client) ReadString(mbean string) (vr *StringValueResponse, err error) {
+	resp, err := c.HTTPClient.Get(c.getURL("/read/" + mbean))
+	if err != nil {
+		return nil, err
+	}
+	dec := json.NewDecoder(resp.Body)
+	if err := dec.Decode(&vr); err != nil {
+		return nil, err
+	}
+	if err := vr.Error(); err != nil {
+		return nil, err
+	}
+	return
+}
 
+// ReadStringMapString ...
+func (c *Client) ReadStringMapString(mbean string) (vr *StringMapStringValueResponse, err error) {
+	resp, err := c.HTTPClient.Get(c.getURL("/read/" + mbean))
+	if err != nil {
+		return nil, err
+	}
+	dec := json.NewDecoder(resp.Body)
+	if err := dec.Decode(&vr); err != nil {
+		return nil, err
+	}
+	if err := vr.Error(); err != nil {
+		return nil, err
+	}
+	return
+}
+
+// ReadBool ...
+func (c *Client) ReadBool(mbean string) (vr *BoolValueResponse, err error) {
+	resp, err := c.HTTPClient.Get(c.getURL("/read/" + mbean))
+	if err != nil {
+		return nil, err
+	}
+	dec := json.NewDecoder(resp.Body)
+	if err := dec.Decode(&vr); err != nil {
+		return nil, err
+	}
+	if err := vr.Error(); err != nil {
+		return nil, err
+	}
+	return
 }
 
 // Exec ...
-func (c *Client) Exec() {
+func (c *Client) Exec(mbean, operation string, args ...interface{}) (r *Response, err error) {
+	request := &Request{
+		Type:      "exec",
+		MBean:     mbean,
+		Operation: operation,
+		Arguments: args,
+	}
 
-}
-
-// Search ...
-func (c *Client) Search() {
-
-}
-
-// List ...
-func (c *Client) List() {
-
-}
-
-// Version ...
-func (c *Client) Version() (versionResp *VersionResponse, err error) {
-	resp, err := c.HTTPClient.Get(c.getURL("/version"))
+	jsonBytes, err := json.Marshal(request)
 	if err != nil {
 		return nil, err
 	}
-	dec := json.NewDecoder(resp.Body)
-	if err := dec.Decode(&versionResp); err != nil {
+	buffer := bytes.NewBuffer(jsonBytes)
+	resp, err := c.HTTPClient.Post(c.getURL("/"), "application/json", buffer)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	asas, _ := ioutil.ReadAll(resp.Body)
+	log.Println(resp.Body, string(asas))
+
+	if err := json.NewDecoder(resp.Body).Decode(&r); err != nil {
+		return nil, err
+	}
+	if err := r.Error(); err != nil {
 		return nil, err
 	}
 	return
 }
 
-// ReadAttributeResponse contains the envelop and the value of the /read/
-// attribute response.
-type ReadAttributeResponse struct {
+// StringMapStringValueResponse contains the response envelop and a string list value
+type StringMapStringValueResponse struct {
 	Response
-	Value interface{} `json:"value,omitempty"`
+	Value map[string]string `json:"value,omitempty"`
 }
 
-// ReadStringListAttributeResponse contains the response envelop and the string
-// list value of the /read/ attribute response.
-type ReadStringListAttributeResponse struct {
+// StringListValueResponse contains the response envelop and a string list value
+type StringListValueResponse struct {
 	Response
 	Value []string `json:"value,omitempty"`
+}
+
+// StringValueResponse contains the response envelop and a string value
+type StringValueResponse struct {
+	Response
+	Value string `json:"value,omitempty"`
+}
+
+// BoolValueResponse contains the response envelop and a boolean value
+type BoolValueResponse struct {
+	Response
+	Value bool `json:"value,omitempty"`
 }
 
 // ListResponseValue represents the response from the List() call
@@ -107,16 +167,41 @@ type ListResponse struct {
 	Value ListResponseValue `json:"value,omitempty"`
 }
 
+// Request ...
+type Request struct {
+	Type      string        `json:"type,omitempty"`
+	MBean     string        `json:"mbean,omitempty"`
+	Operation string        `json:"operation,omitempty"`
+	Arguments []interface{} `json:"arguments,omitempty"`
+}
+
 // Response represents a Jolokia response envelope
 type Response struct {
-	Timestamp int64 `json:"timestamp,omitempty"`
-	Status    int64 `json:"status,omitempty"`
-	Request   struct {
-		Type string `json:"type,omitempty"`
-	} `json:"request,omitempty"`
-	Error      string `json:"error,omitempty"`
-	ErrorType  string `json:"error_type,omitempty"`
-	Stacktrace string `json:"stacktrace,omitempty"`
+	Timestamp  int64   `json:"timestamp,omitempty"`
+	Status     int64   `json:"status,omitempty"`
+	Request    Request `json:"request,omitempty"`
+	ErrorText  string  `json:"error,omitempty"`
+	ErrorType  string  `json:"error_type,omitempty"`
+	Stacktrace string  `json:"stacktrace,omitempty"`
+}
+
+// AnyResponse ...
+type AnyResponse interface {
+	Error() error
+}
+
+// Errored returns true of the Response got errors
+func (r *Response) Error() error {
+	if len(r.ErrorText) > 0 {
+		return errors.New(r.ErrorText)
+	}
+	return nil
+}
+
+// ValueResponse ...
+type ValueResponse interface {
+	DecodeJSON(r io.Reader) error
+	Error() error
 }
 
 // VersionResponseValue represents the response from the Version() call
@@ -143,4 +228,17 @@ type VersionResponseValue struct {
 type VersionResponse struct {
 	Response
 	Value VersionResponseValue `json:"value,omitempty"`
+}
+
+// Version ...
+func (c *Client) Version() (versionResp *VersionResponse, err error) {
+	resp, err := c.HTTPClient.Get(c.getURL("/version"))
+	if err != nil {
+		return nil, err
+	}
+	dec := json.NewDecoder(resp.Body)
+	if err := dec.Decode(&versionResp); err != nil {
+		return nil, err
+	}
+	return
 }

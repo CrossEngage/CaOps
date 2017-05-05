@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"bitbucket.org/crossengage/athena/cassandra"
-	"bitbucket.org/crossengage/athena/cassandra/jolokia"
 
 	"github.com/gocql/gocql"
 	logging "github.com/op/go-logging"
@@ -62,18 +61,14 @@ func main() {
 	}
 	defer session.Close()
 
-	nodetool := cassandra.NodeTool{
-		JolokiaClient: jolokia.Client{
-			HTTPClient: http.DefaultClient,
-			BaseURL:    **jolokiaURL,
-		},
-	}
+	nodeprobe := cassandra.NewNodeProbe(http.DefaultClient, **jolokiaURL)
 
-	liveNodes, err := nodetool.LiveNodes()
+	r, err := nodeprobe.StorageService.SnapshotDetails()
 	if err != nil {
 		loggr.Fatal(err)
+	} else {
+		loggr.Infof("Result: %+v", r.Value)
 	}
 
-	loggr.Infof("%#v", liveNodes)
 	loggr.Info("That's all folks!")
 }

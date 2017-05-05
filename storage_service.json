@@ -1,0 +1,1269 @@
+{
+    "request": {
+        "path": "org.apache.cassandra.db/type=StorageService",
+        "type": "list"
+    },
+    "status": 200,
+    "timestamp": 1493907531,
+    "value": {
+        "attr": {
+            "AllDataFileLocations": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "[Ljava.lang.String;"
+            },
+            "BatchSizeFailureThreshold": {
+                "desc": "Attribute exposed for management",
+                "rw": true,
+                "type": "int"
+            },
+            "ClusterName": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.lang.String"
+            },
+            "CommitLogLocation": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.lang.String"
+            },
+            "CompactionThroughputMbPerSec": {
+                "desc": "Attribute exposed for management",
+                "rw": true,
+                "type": "int"
+            },
+            "CurrentGenerationNumber": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "int"
+            },
+            "DrainProgress": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.lang.String"
+            },
+            "EndpointToHostId": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.util.Map"
+            },
+            "GossipRunning": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "boolean"
+            },
+            "HintedHandoffThrottleInKB": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "int"
+            },
+            "HostIdMap": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.util.Map"
+            },
+            "HostIdToEndpoint": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.util.Map"
+            },
+            "IncrementalBackupsEnabled": {
+                "desc": "Attribute exposed for management",
+                "rw": true,
+                "type": "boolean"
+            },
+            "Initialized": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "boolean"
+            },
+            "InterDCStreamThroughputMbPerSec": {
+                "desc": "Attribute exposed for management",
+                "rw": true,
+                "type": "int"
+            },
+            "Joined": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "boolean"
+            },
+            "JoiningNodes": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.util.List"
+            },
+            "Keyspaces": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.util.List"
+            },
+            "LeavingNodes": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.util.List"
+            },
+            "LiveNodes": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.util.List"
+            },
+            "LoadMap": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.util.Map"
+            },
+            "LoadString": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.lang.String"
+            },
+            "LocalHostId": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.lang.String"
+            },
+            "LoggingLevels": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.util.Map"
+            },
+            "MovingNodes": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.util.List"
+            },
+            "NativeTransportRunning": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "boolean"
+            },
+            "NonSystemKeyspaces": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.util.List"
+            },
+            "NotificationInfo": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "[Ljavax.management.MBeanNotificationInfo;"
+            },
+            "OperationMode": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.lang.String"
+            },
+            "Ownership": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.util.Map"
+            },
+            "PartitionerName": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.lang.String"
+            },
+            "RPCServerRunning": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "boolean"
+            },
+            "ReleaseVersion": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.lang.String"
+            },
+            "RemovalStatus": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.lang.String"
+            },
+            "SavedCachesLocation": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.lang.String"
+            },
+            "SchemaVersion": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.lang.String"
+            },
+            "SnapshotDetails": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.util.Map"
+            },
+            "Starting": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "boolean"
+            },
+            "StreamThroughputMbPerSec": {
+                "desc": "Attribute exposed for management",
+                "rw": true,
+                "type": "int"
+            },
+            "TokenToEndpointMap": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.util.Map"
+            },
+            "Tokens": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.util.List"
+            },
+            "TombstoneFailureThreshold": {
+                "desc": "Attribute exposed for management",
+                "rw": true,
+                "type": "int"
+            },
+            "TombstoneWarnThreshold": {
+                "desc": "Attribute exposed for management",
+                "rw": true,
+                "type": "int"
+            },
+            "TraceProbability": {
+                "desc": "Attribute exposed for management",
+                "rw": true,
+                "type": "double"
+            },
+            "UnreachableNodes": {
+                "desc": "Attribute exposed for management",
+                "rw": false,
+                "type": "java.util.List"
+            }
+        },
+        "desc": "Information on the management interface of the MBean",
+        "op": {
+            "addNotificationListener": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "javax.management.NotificationListener"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p2",
+                        "type": "javax.management.NotificationFilter"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p3",
+                        "type": "java.lang.Object"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "bulkLoad": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "bulkLoadAsync": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "java.lang.String"
+            },
+            "clearSnapshot": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p2",
+                        "type": "[Ljava.lang.String;"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "decommission": {
+                "args": [],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "deliverHints": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "describeRingJMX": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "java.util.List"
+            },
+            "disableAutoCompaction": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p2",
+                        "type": "[Ljava.lang.String;"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "drain": {
+                "args": [],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "effectiveOwnership": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "java.util.Map"
+            },
+            "enableAutoCompaction": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p2",
+                        "type": "[Ljava.lang.String;"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "forceKeyspaceCleanup": [
+                {
+                    "args": [
+                        {
+                            "desc": "",
+                            "name": "p1",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p2",
+                            "type": "[Ljava.lang.String;"
+                        }
+                    ],
+                    "desc": "Operation exposed for management",
+                    "ret": "int"
+                },
+                {
+                    "args": [
+                        {
+                            "desc": "",
+                            "name": "p1",
+                            "type": "int"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p2",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p3",
+                            "type": "[Ljava.lang.String;"
+                        }
+                    ],
+                    "desc": "Operation exposed for management",
+                    "ret": "int"
+                }
+            ],
+            "forceKeyspaceCompaction": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "boolean"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p2",
+                        "type": "java.lang.String"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p3",
+                        "type": "[Ljava.lang.String;"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "forceKeyspaceFlush": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p2",
+                        "type": "[Ljava.lang.String;"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "forceRemoveCompletion": {
+                "args": [],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "forceRepairAsync": [
+                {
+                    "args": [
+                        {
+                            "desc": "",
+                            "name": "p1",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p2",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p3",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p4",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p5",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p6",
+                            "type": "[Ljava.lang.String;"
+                        }
+                    ],
+                    "desc": "Operation exposed for management",
+                    "ret": "int"
+                },
+                {
+                    "args": [
+                        {
+                            "desc": "",
+                            "name": "p1",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p2",
+                            "type": "int"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p3",
+                            "type": "java.util.Collection"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p4",
+                            "type": "java.util.Collection"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p5",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p6",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p7",
+                            "type": "[Ljava.lang.String;"
+                        }
+                    ],
+                    "desc": "Operation exposed for management",
+                    "ret": "int"
+                },
+                {
+                    "args": [
+                        {
+                            "desc": "",
+                            "name": "p1",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p2",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p3",
+                            "type": "java.util.Collection"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p4",
+                            "type": "java.util.Collection"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p5",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p6",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p7",
+                            "type": "[Ljava.lang.String;"
+                        }
+                    ],
+                    "desc": "Operation exposed for management",
+                    "ret": "int"
+                }
+            ],
+            "forceRepairRangeAsync": [
+                {
+                    "args": [
+                        {
+                            "desc": "",
+                            "name": "p1",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p2",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p3",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p4",
+                            "type": "int"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p5",
+                            "type": "java.util.Collection"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p6",
+                            "type": "java.util.Collection"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p7",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p8",
+                            "type": "[Ljava.lang.String;"
+                        }
+                    ],
+                    "desc": "Operation exposed for management",
+                    "ret": "int"
+                },
+                {
+                    "args": [
+                        {
+                            "desc": "",
+                            "name": "p1",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p2",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p3",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p4",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p5",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p6",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p7",
+                            "type": "[Ljava.lang.String;"
+                        }
+                    ],
+                    "desc": "Operation exposed for management",
+                    "ret": "int"
+                },
+                {
+                    "args": [
+                        {
+                            "desc": "",
+                            "name": "p1",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p2",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p3",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p4",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p5",
+                            "type": "java.util.Collection"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p6",
+                            "type": "java.util.Collection"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p7",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p8",
+                            "type": "[Ljava.lang.String;"
+                        }
+                    ],
+                    "desc": "Operation exposed for management",
+                    "ret": "int"
+                }
+            ],
+            "forceTerminateAllRepairSessions": {
+                "args": [],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "getNaturalEndpoints": [
+                {
+                    "args": [
+                        {
+                            "desc": "",
+                            "name": "p1",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p2",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p3",
+                            "type": "java.lang.String"
+                        }
+                    ],
+                    "desc": "Operation exposed for management",
+                    "ret": "java.util.List"
+                },
+                {
+                    "args": [
+                        {
+                            "desc": "",
+                            "name": "p1",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p2",
+                            "type": "java.nio.ByteBuffer"
+                        }
+                    ],
+                    "desc": "Operation exposed for management",
+                    "ret": "java.util.List"
+                }
+            ],
+            "getPendingRangeToEndpointMap": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "java.util.Map"
+            },
+            "getRangeToEndpointMap": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "java.util.Map"
+            },
+            "getRangeToRpcaddressMap": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "java.util.Map"
+            },
+            "getTokens": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "java.util.List"
+            },
+            "joinRing": {
+                "args": [],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "loadNewSSTables": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p2",
+                        "type": "java.lang.String"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "move": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "rebuild": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "rebuildSecondaryIndex": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p2",
+                        "type": "java.lang.String"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p3",
+                        "type": "[Ljava.lang.String;"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "refreshSizeEstimates": {
+                "args": [],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "removeNode": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "removeNotificationListener": [
+                {
+                    "args": [
+                        {
+                            "desc": "",
+                            "name": "p1",
+                            "type": "javax.management.NotificationListener"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p2",
+                            "type": "javax.management.NotificationFilter"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p3",
+                            "type": "java.lang.Object"
+                        }
+                    ],
+                    "desc": "Operation exposed for management",
+                    "ret": "void"
+                },
+                {
+                    "args": [
+                        {
+                            "desc": "",
+                            "name": "p1",
+                            "type": "javax.management.NotificationListener"
+                        }
+                    ],
+                    "desc": "Operation exposed for management",
+                    "ret": "void"
+                }
+            ],
+            "repairAsync": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p2",
+                        "type": "java.util.Map"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "int"
+            },
+            "rescheduleFailedDeletions": {
+                "args": [],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "resetLocalSchema": {
+                "args": [],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "resumeBootstrap": {
+                "args": [],
+                "desc": "Operation exposed for management",
+                "ret": "boolean"
+            },
+            "sampleKeyRange": {
+                "args": [],
+                "desc": "Operation exposed for management",
+                "ret": "java.util.List"
+            },
+            "scrub": [
+                {
+                    "args": [
+                        {
+                            "desc": "",
+                            "name": "p1",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p2",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p3",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p4",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p5",
+                            "type": "[Ljava.lang.String;"
+                        }
+                    ],
+                    "desc": "Operation exposed for management",
+                    "ret": "int"
+                },
+                {
+                    "args": [
+                        {
+                            "desc": "",
+                            "name": "p1",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p2",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p3",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p4",
+                            "type": "[Ljava.lang.String;"
+                        }
+                    ],
+                    "desc": "Operation exposed for management",
+                    "ret": "int"
+                },
+                {
+                    "args": [
+                        {
+                            "desc": "",
+                            "name": "p1",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p2",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p3",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p4",
+                            "type": "int"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p5",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p6",
+                            "type": "[Ljava.lang.String;"
+                        }
+                    ],
+                    "desc": "Operation exposed for management",
+                    "ret": "int"
+                }
+            ],
+            "setLoggingLevel": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p2",
+                        "type": "java.lang.String"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "startGossiping": {
+                "args": [],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "startNativeTransport": {
+                "args": [],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "startRPCServer": {
+                "args": [],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "stopDaemon": {
+                "args": [],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "stopGossiping": {
+                "args": [],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "stopNativeTransport": {
+                "args": [],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "stopRPCServer": {
+                "args": [],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "takeColumnFamilySnapshot": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p2",
+                        "type": "java.lang.String"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p3",
+                        "type": "java.lang.String"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "takeMultipleColumnFamilySnapshot": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p2",
+                        "type": "[Ljava.lang.String;"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "takeSnapshot": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p2",
+                        "type": "[Ljava.lang.String;"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "trueSnapshotsSize": {
+                "args": [],
+                "desc": "Operation exposed for management",
+                "ret": "long"
+            },
+            "truncate": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p2",
+                        "type": "java.lang.String"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "updateSnitch": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "java.lang.String"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p2",
+                        "type": "java.lang.Boolean"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p3",
+                        "type": "java.lang.Integer"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p4",
+                        "type": "java.lang.Integer"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p5",
+                        "type": "java.lang.Double"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "void"
+            },
+            "upgradeSSTables": [
+                {
+                    "args": [
+                        {
+                            "desc": "",
+                            "name": "p1",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p2",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p3",
+                            "type": "[Ljava.lang.String;"
+                        }
+                    ],
+                    "desc": "Operation exposed for management",
+                    "ret": "int"
+                },
+                {
+                    "args": [
+                        {
+                            "desc": "",
+                            "name": "p1",
+                            "type": "java.lang.String"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p2",
+                            "type": "boolean"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p3",
+                            "type": "int"
+                        },
+                        {
+                            "desc": "",
+                            "name": "p4",
+                            "type": "[Ljava.lang.String;"
+                        }
+                    ],
+                    "desc": "Operation exposed for management",
+                    "ret": "int"
+                }
+            ],
+            "verify": {
+                "args": [
+                    {
+                        "desc": "",
+                        "name": "p1",
+                        "type": "boolean"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p2",
+                        "type": "java.lang.String"
+                    },
+                    {
+                        "desc": "",
+                        "name": "p3",
+                        "type": "[Ljava.lang.String;"
+                    }
+                ],
+                "desc": "Operation exposed for management",
+                "ret": "int"
+            }
+        }
+    }
+}
