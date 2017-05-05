@@ -234,7 +234,6 @@ func (sd *SnapshotDetails) UnmarshalJSON(buf []byte) error {
 	}
 
 	var rawMaps map[string]map[string]map[string]map[string]map[string]map[string]TableSnapshot
-
 	if err := json.NewDecoder(bytes.NewBuffer(buf)).Decode(&rawMaps); err != nil {
 		return err
 	}
@@ -282,9 +281,15 @@ func (ss *StorageService) SnapshotDetails() (*SnapshotDetailsResponse, error) {
 	return details, err
 }
 
-// // Get the true size taken by all snapshots across all keyspaces.
-// // @return True size taken by all the snapshots.
-// func (ss *StorageService) trueSnapshotsSize() uint64 {}
+// AllSnapshotsSize get the true size taken by all snapshots across all keyspaces.
+func (ss *StorageService) AllSnapshotsSize() (uint64, error) {
+	response := &jolokia.Uint64ValueResponse{}
+	err := ss.JolokiaClient.ExecInto(response, storageServicePath, "trueSnapshotsSize")
+	if err != nil {
+		return 0, err
+	}
+	return response.Value, nil
+}
 
 // // Forces refresh of values stored in system.size_estimates of all column families.
 // func (ss *StorageService) refreshSizeEstimates() error {}

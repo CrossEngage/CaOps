@@ -134,6 +134,35 @@ func (c *Client) Exec(mbean, operation string, args ...interface{}) (r *Response
 	return
 }
 
+// ExecInto ...
+func (c *Client) ExecInto(response ValueResponse, mbean, operation string, args ...interface{}) error {
+	request := &Request{
+		Type:      "exec",
+		MBean:     mbean,
+		Operation: operation,
+		Arguments: args,
+	}
+
+	jsonBytes, err := json.Marshal(request)
+	if err != nil {
+		return err
+	}
+	buffer := bytes.NewBuffer(jsonBytes)
+	resp, err := c.HTTPClient.Post(c.getURL("/"), "application/json", buffer)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if err := response.DecodeJSON(resp.Body); err != nil {
+		return err
+	}
+	if err := response.Error(); err != nil {
+		return err
+	}
+	return nil
+}
+
 // StringMapStringValueResponse contains the response envelop and a string list value
 type StringMapStringValueResponse struct {
 	Response
@@ -150,6 +179,21 @@ type StringListValueResponse struct {
 type StringValueResponse struct {
 	Response
 	Value string `json:"value,omitempty"`
+}
+
+// Uint64ValueResponse contains the response envelop and int64/long value
+type Uint64ValueResponse struct {
+	Response
+	Value uint64 `json:"value,omitempty"`
+}
+
+// DecodeJSON ...
+func (vr *Uint64ValueResponse) DecodeJSON(r io.Reader) error {
+	dec := json.NewDecoder(r)
+	if err := dec.Decode(vr); err != nil {
+		return err
+	}
+	return nil
 }
 
 // BoolValueResponse contains the response envelop and a boolean value

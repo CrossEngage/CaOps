@@ -63,11 +63,11 @@ func main() {
 
 	nodeprobe := cassandra.NewNodeProbe(http.DefaultClient, **jolokiaURL)
 
-	r, err := nodeprobe.StorageService.SnapshotDetails()
+	r, err := nodeprobe.StorageService.AllSnapshotsSize()
 	if err != nil {
 		loggr.Fatal(err)
 	} else {
-		loggr.Infof("Result: %+v", r.Value)
+		loggr.Infof("Result: %+v", r)
 	}
 
 	loggr.Info("That's all folks!")
