@@ -7,6 +7,8 @@ import (
 
 	"bitbucket.org/crossengage/athena/cassandra"
 
+	"time"
+
 	"github.com/gocql/gocql"
 	logging "github.com/op/go-logging"
 	"gopkg.in/alecthomas/kingpin.v2"
@@ -63,8 +65,19 @@ func main() {
 
 	nodeprobe := cassandra.NewNodeProbe(http.DefaultClient, **jolokiaURL)
 
-	r, err := nodeprobe.StorageService.AllSnapshotsSize()
-	if err != nil {
+	if err := nodeprobe.StorageService.TakeSnapshot(time.Now().String(), "test"); err != nil {
+		loggr.Fatal(err)
+	}
+
+	time.Sleep(3 * time.Second)
+
+	if r, err := nodeprobe.StorageService.SnapshotDetails(); err != nil {
+		loggr.Fatal(err)
+	} else {
+		loggr.Infof("Result: %+v", r)
+	}
+
+	if r, err := nodeprobe.StorageService.AllSnapshotsSize(); err != nil {
 		loggr.Fatal(err)
 	} else {
 		loggr.Infof("Result: %+v", r)

@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -122,8 +121,6 @@ func (c *Client) Exec(mbean, operation string, args ...interface{}) (r *Response
 		return nil, err
 	}
 	defer resp.Body.Close()
-	asas, _ := ioutil.ReadAll(resp.Body)
-	log.Println(resp.Body, string(asas))
 
 	if err := json.NewDecoder(resp.Body).Decode(&r); err != nil {
 		return nil, err

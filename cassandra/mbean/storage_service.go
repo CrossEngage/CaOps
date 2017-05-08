@@ -3,6 +3,7 @@ package mbean
 import (
 	"encoding/json"
 	"io"
+	"log"
 
 	"bytes"
 
@@ -198,24 +199,55 @@ func (ss *StorageService) TakeSnapshot(tag string, keyspaces ...string) error {
 	args := make([]interface{}, 2)
 	args[0] = tag
 	args[1] = keyspaces
-	_, err := ss.JolokiaClient.Exec(storageServicePath, "takeSnapshot", args...)
+	r, err := ss.JolokiaClient.Exec(storageServicePath, "takeSnapshot", args...)
 	if err != nil {
 		return err
 	}
+	log.Println(r)
 	return nil
 }
 
-// // Takes the snapshot of a specific column family. A snapshot name must be specified.
-// func (ss *StorageService) TakeTableSnapshot(keyspaceName, tableName, tag string) error {}
+// TakeTableSnapshot is self-explanatory
+func (ss *StorageService) TakeTableSnapshot(tag, keyspace, table string) error {
+	args := make([]interface{}, 3)
+	args[0] = keyspace
+	args[1] = table
+	args[2] = tag
+	r, err := ss.JolokiaClient.Exec(storageServicePath, "takeTableSnapshot", args...)
+	if err != nil {
+		return err
+	}
+	log.Println(r)
+	return nil
+}
 
-// // Takes the snapshot of a multiple column family from different keyspaces. A snapshot name must be specified.
-// //    the tag given to the snapshot; may not be null or empty
-// //    list of tables from different keyspace in the form of ks1.cf1 ks2.cf2
-// func (ss *StorageService) takeMultipleTableSnapshot(tag string, tableList ...string) error {}
+// TakeMultipleTableSnapshot takes the snapshot of a multiple column family from different
+// keyspaces. A snapshot name must be specified.
+func (ss *StorageService) TakeMultipleTableSnapshot(tag string, tableList ...string) error {
+	args := make([]interface{}, 2)
+	args[0] = tag
+	args[1] = tableList
+	r, err := ss.JolokiaClient.Exec(storageServicePath, "takeMultipleTableSnapshot", args...)
+	if err != nil {
+		return err
+	}
+	log.Println(r)
+	return nil
+}
 
-// // Remove the snapshot with the given name from the given keyspaces.
-// // If no tag is specified we will remove all snapshots.
-// func (ss *StorageService) clearSnapshot(tag string, keyspaceNames ...string) error {}
+// ClearSnapshot remove the snapshot with the given name from the given keyspaces.
+// If no tag is specified we will remove all snapshots.
+func (ss *StorageService) ClearSnapshot(tag string, keyspaces ...string) error {
+	args := make([]interface{}, 2)
+	args[0] = tag
+	args[1] = keyspaces
+	r, err := ss.JolokiaClient.Exec(storageServicePath, "clearSnapshot", args...)
+	if err != nil {
+		return err
+	}
+	log.Println(r)
+	return nil
+}
 
 // SnapshotDetailsResponse encapsulates the weird response when we get while reading this
 // property from Cassandra
@@ -288,11 +320,20 @@ func (ss *StorageService) AllSnapshotsSize() (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
+	log.Printf("\n%+v\n\n", response)
 	return response.Value, nil
 }
 
-// // Forces refresh of values stored in system.size_estimates of all column families.
-// func (ss *StorageService) refreshSizeEstimates() error {}
+// RefreshSizeEstimates forces refresh of values stored in system.size_estimates of all
+// column families.
+func (ss *StorageService) refreshSizeEstimates() error {
+	r, err := ss.JolokiaClient.Exec(storageServicePath, "refreshSizeEstimates")
+	if err != nil {
+		return err
+	}
+	log.Println(r)
+	return nil
+}
 
 // // Verify (checksums of) the given keyspace.
 // // If tableNames array is empty, all CFs are verified.
@@ -300,9 +341,19 @@ func (ss *StorageService) AllSnapshotsSize() (uint64, error) {
 // func (ss *StorageService) verify(extendedVerify bool, keyspaceName string, tableNames ...string) (int, error) {
 // }
 
-// // Flush all memtables for the given column families, or all columnfamilies for the given keyspace
-// // if none are explicitly listed.
-// func (ss *StorageService) forceKeyspaceFlush(keyspaceName string, tableNames ...string) error {}
+// ForceKeyspaceFlush flush all memtables for the given column families, or all columnfamilies for
+// the given keyspace if none are explicitly listed.
+func (ss *StorageService) ForceKeyspaceFlush(keyspace string, tables ...string) error {
+	args := make([]interface{}, 2)
+	args[0] = keyspace
+	args[1] = tables
+	r, err := ss.JolokiaClient.Exec(storageServicePath, "forceKeyspaceFlush", args...)
+	if err != nil {
+		return err
+	}
+	log.Println(r)
+	return nil
+}
 
 // Starting returns whether the storage service is starting or not
 func (ss *StorageService) Starting() (bool, error) {
