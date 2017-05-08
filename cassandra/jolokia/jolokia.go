@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 )
@@ -19,7 +18,6 @@ type Client struct {
 func (c *Client) getURL(path string) string {
 	url := c.BaseURL
 	url.Path += path
-	log.Println(url.String())
 	return url.String()
 }
 

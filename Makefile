@@ -24,9 +24,9 @@ deps:
 
 
 VERSION := $(shell git describe --all --always --dirty --long)
-.PHONY: gen_version.go
-gen_version.go:
-	@printf "package main\nconst version=\`$(VERSION)\`\n" | \
+.PHONY: cmd/gen_version.go
+cmd/gen_version.go:
+	@printf "package cmd\nconst version=\`$(VERSION)\`\n" | \
 		gofmt | tee $@
 
 

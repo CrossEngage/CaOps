@@ -1,9 +1,6 @@
 package cassandra
 
 import (
-	"net/http"
-	"net/url"
-
 	"bitbucket.org/crossengage/athena/cassandra/jolokia"
 	"bitbucket.org/crossengage/athena/cassandra/mbean"
 )
@@ -15,12 +12,8 @@ type NodeProbe struct {
 }
 
 // NewNodeProbe builds a new Cassandra NodeProbe
-func NewNodeProbe(httpClient *http.Client, baseJolokiaURL url.URL) *NodeProbe {
-	JolokiaClient := jolokia.Client{
-		HTTPClient: http.DefaultClient,
-		BaseURL:    baseJolokiaURL,
-	}
+func NewNodeProbe(jolokiaClient jolokia.Client) *NodeProbe {
 	return &NodeProbe{
-		StorageService: mbean.StorageService{JolokiaClient: JolokiaClient},
+		StorageService: mbean.StorageService{JolokiaClient: jolokiaClient},
 	}
 }

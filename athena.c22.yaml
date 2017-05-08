@@ -1,0 +1,11 @@
+debug: true
+
+cassandra:
+
+  jolokia            : http://10.2.2.10:8778/jolokia
+  cql                : 10.2.2.10:9042
+  protocol           : 4
+  timeout            : 600ms
+  keep-alive         : 0
+  reconnect-interval : 0
+  retries            : 3
