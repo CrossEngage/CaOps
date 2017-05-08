@@ -16,7 +16,7 @@ func init() {
 	logging.SetFormatter(logging.MustStringFormatter(normalFormat))
 }
 
-func enableDebug(debug bool) {
+func enableDebug() {
 	if debug {
 		logging.SetLevel(logging.DEBUG, appName)
 		logging.SetFormatter(logging.MustStringFormatter(debugFormat))

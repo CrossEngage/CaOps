@@ -2,14 +2,11 @@ package cmd
 
 import (
 	"fmt"
+	"net/http"
+	"net/url"
 
 	"bitbucket.org/crossengage/athena/cassandra"
 	"bitbucket.org/crossengage/athena/cassandra/jolokia"
-
-	"net/http"
-
-	"net/url"
-
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
