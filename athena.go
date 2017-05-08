@@ -2,15 +2,10 @@
 package main
 
 import (
-	"net/http"
 	"os"
 
-	"bitbucket.org/crossengage/athena/cassandra"
-
-	"time"
-
-	"github.com/gocql/gocql"
 	logging "github.com/op/go-logging"
+
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
@@ -19,9 +14,8 @@ const (
 )
 
 var (
-	app = kingpin.New(appName, "A service to backup Cassandra keyspaces to MS Azure")
-
-	debug             = app.Flag("debug", "Enable debugging.").Short('d').Default("false").Bool()
+	app   = kingpin.New(appName, "A service to backup Cassandra keyspaces to MS Azure")
+	debug = app.Flag("debug", "Enable debugging.").Short('d').Default("false").Bool()
 	cqlAddr           = app.Flag("cql", "CQL address of Cassandra node.").Short('c').Default("127.0.0.1:9042").TCP()
 	jolokiaURL        = app.Flag("jolokia", "Jolokia URL of Cassandra node.").Short('j').Default("http://127.0.0.1:8778/jolokia").URL()
 	protoVer          = app.Flag("protocol-version", "Prefer '3' for C* < 2.2, and '4' for C* >= 2.2, 3.x).").Default("4").Int()
@@ -46,42 +40,38 @@ func init() {
 }
 
 func main() {
-	cluster := gocql.NewCluster((*cqlAddr).IP.String())
-	cluster.Port = (*cqlAddr).Port
-	cluster.ProtoVersion = *protoVer
-	cluster.Consistency = gocql.ParseConsistency("QUORUM")
-	cluster.Timeout = *timeout
-	cluster.SocketKeepalive = *sockKeepAlive
-	cluster.DisableInitialHostLookup = true
-	cluster.ReconnectInterval = *reconnectInterval
-	cluster.RetryPolicy = &gocql.SimpleRetryPolicy{NumRetries: 3}
-	cluster.Compressor = gocql.SnappyCompressor{}
+	// cluster := gocql.NewCluster((*cqlAddr).IP.String())
+	// cluster.Port = (*cqlAddr).Port
+	// cluster.ProtoVersion = *protoVer
+	// cluster.Consistency = gocql.ParseConsistency("QUORUM")
+	// cluster.Timeout = *timeout
+	// cluster.SocketKeepalive = *sockKeepAlive
+	// cluster.DisableInitialHostLookup = true
+	// cluster.ReconnectInterval = *reconnectInterval
+	// cluster.RetryPolicy = &gocql.SimpleRetryPolicy{NumRetries: 3}
+	// cluster.Compressor = gocql.SnappyCompressor{}
 
-	session, err := cluster.CreateSession()
-	if err != nil {
-		loggr.Fatal(err)
-	}
-	defer session.Close()
+	// session, err := cluster.CreateSession()
+	// if err != nil {
+	// 	loggr.Fatal(err)
+	// }
+	// defer session.Close()
 
-	nodeprobe := cassandra.NewNodeProbe(http.DefaultClient, **jolokiaURL)
-
-	if err := nodeprobe.StorageService.TakeSnapshot(time.Now().String(), "test"); err != nil {
-		loggr.Fatal(err)
-	}
-
-	time.Sleep(3 * time.Second)
-
-	if r, err := nodeprobe.StorageService.SnapshotDetails(); err != nil {
-		loggr.Fatal(err)
-	} else {
-		loggr.Infof("Result: %+v", r)
-	}
-
-	if r, err := nodeprobe.StorageService.AllSnapshotsSize(); err != nil {
-		loggr.Fatal(err)
-	} else {
-		loggr.Infof("Result: %+v", r)
-	}
+	// nodeprobe := cassandra.NewNodeProbe(http.DefaultClient, **jolokiaURL)
+	// if err := nodeprobe.StorageService.TakeSnapshot(time.Now().String(), "test"); err != nil {
+	// 	loggr.Fatal(err)
+	// }
+	// time.Sleep(3 * time.Second)
+	// if r, err := nodeprobe.StorageService.SnapshotDetails(); err != nil {
+	// 	loggr.Fatal(err)
+	// } else {
+	// 	loggr.Infof("Result: %+v", r)
+	// }
+	// if r, err := nodeprobe.StorageService.AllSnapshotsSize(); err != nil {
+	// 	loggr.Fatal(err)
+	// } else {
+	// 	loggr.Infof("Result: %+v", r)
+	// }
 
 	loggr.Info("That's all folks!")
 }
