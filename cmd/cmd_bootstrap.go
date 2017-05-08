@@ -26,8 +26,11 @@ func runBootstrapCmd(cmd *cobra.Command, args []string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	defer session.Close()
+	if err := bootstrapDatabase(session); err != nil {
+		log.Fatal(err)
+	}
+	log.Info("Bootstrap finished.")
 }
 
 func getCassandraClusterConfig() *gocql.ClusterConfig {
@@ -44,6 +47,7 @@ func getCassandraClusterConfig() *gocql.ClusterConfig {
 	config.DisableInitialHostLookup = true
 	config.ReconnectInterval = viper.GetDuration("cassandra.reconnect-interval")
 	config.RetryPolicy = &gocql.SimpleRetryPolicy{NumRetries: viper.GetInt("cassandra.retries")}
+	config.MaxWaitSchemaAgreement = viper.GetDuration("cassandra.max-wait-schema-agreement")
 	config.Compressor = gocql.SnappyCompressor{}
 	return config
 }
