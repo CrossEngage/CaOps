@@ -4,11 +4,6 @@ LDFLAGS := "-w"
 help:
 	@echo "make [target]"
 	@echo " Targets: "
-	@echo "   dev-deps    Install development dependencies   "
-	@echo "   vm          Initialize Virtualbox VM           "
-	@echo "   migrate     Rollout migrations                 "
-	@echo "   reset       Rollback and rollout migrations    "
-	@echo "   down        Rollback migrations                "
 	@echo "   linux       Build for Linux amd64 into dist/   "
 	@echo "   darwin      Build for Darwin amd64 into dist/  "
 	@echo "   windows     Build for Windows amd64 into dist/ "
@@ -24,52 +19,30 @@ deps:
 
 
 VERSION := $(shell git describe --all --always --dirty --long)
-.PHONY: cmd/gen_version.go
-cmd/gen_version.go:
+.PHONY: version
+version:
 	@printf "package cmd\nconst version=\`$(VERSION)\`\n" | \
-		gofmt | tee $@
+		gofmt | tee cmd/gen_version.go
 
 
-dev-deps:
-	go get github.com/tools/godep
-	go get github.com/mattes/migrate
-
-
-vm:	dev-deps
-	vagrant box update
-	vagrant up
-
-
-migrate: dev-deps
-	migrate -url cassandra://$(VMIP)/cassandra_dump -path ./migrations up
-
-
-reset: dev-deps
-	migrate -url cassandra://$(VMIP)/cassandra_dump -path ./migrations reset
-
-
-down: dev-deps
-	migrate -url cassandra://$(VMIP)/cassandra_dump -path ./migrations down
-
-
-build:
+build: version
 	go generate
 	go build -v
 
 
-linux:
+linux: version
 	$(info Building for Linux 64bits...)
 	go generate && \
 	env GOOS=linux GOHOSTARCH=amd64 go build -ldflags="$(LDFLAGS)" -v -o dist/$(VERSION)/linux-amd64/$(BIN)
 
 
-darwin:
+darwin: version
 	$(info Building for Darwin 64bits...)
 	go generate && \
 	env GOOS=darwin GOHOSTARCH=amd64 go build -ldflags="$(LDFLAGS)" -v -o dist/$(VERSION)/darwin-amd64/$(BIN)
 
 
-windows:
+windows: version
 	$(info Building for Windows 64bits...)
 	go generate && \
 	env GOOS=windows GOHOSTARCH=amd64 go build -ldflags="$(LDFLAGS)" -v -o dist/$(VERSION)/windows-amd64/$(BIN).exe
