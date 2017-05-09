@@ -1,11 +1,13 @@
 package cmd
 
 import (
+	"time"
+
 	"github.com/gocql/gocql"
 )
 
 var (
-	bootstrap = []string{
+	schema = []string{
 		`CREATE KEYSPACE IF NOT EXISTS athena
 		 WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 };`,
 
@@ -32,11 +34,29 @@ var (
 )
 
 func bootstrapDatabase(session *gocql.Session) error {
-	for _, query := range bootstrap {
+	for _, query := range schema {
 		if err := session.Query(query).RetryPolicy(nil).Exec(); err != nil {
 			log.Debug(query)
 			return err
 		}
 	}
 	return nil
+}
+
+type recurringJob struct {
+	Interval uint64
+	Unit     string
+	AtTime   string
+	Keyspace string
+	Table    string
+}
+
+type oneTimeJob struct {
+	Keyspace string
+	Table    string
+	At       time.Time
+}
+
+func getAllRecurringJobs(session *gocql.Session) (map[string]recurringJob, error) {
+	return nil, nil
 }
