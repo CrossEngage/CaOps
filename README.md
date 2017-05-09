@@ -1,11 +1,11 @@
 # Athena
 
-> When Troy fell to the Greeks, Cassandra tried to find a shelter in Athena’s Temple, but she was brutally abducted by Ajax and was brought to Agamemnon as a concubine. Cassandra died in Mycenae, murdered along with Agamemnon by his wife Clytemnestra and her lover Aegisthus.
+## Arquitecture
 
-
-# Arquitecture
-
-* Connects to Cassandra via Jolokia+JMX
+* Interacts with Cassandra via Jolokia+JMX
+* Uses Cassandra as a backing storage
+* Has subcommands to handle bootstrapping separately of serving
+* Pools every 30 seconds for new scheduled jobs
 
 * Daemon with HTTP API
 * Exports an API `at`-like for scheduling the backup of a keyspace and/or specific tables
@@ -20,12 +20,13 @@
 * Check cluster status
 
 
-# OPT
+## To-Do
 
-* Should rename it to cerberus? (something with many heads?)
-* Serf internode comm, to know all Athenas are online
+* Better error handling of Jolokia errors
+* Tests
+* Better code org
 
 
-# URLs
+## URLs
 
 https://jolokia.org/reference/html/agents.html#agents-jvm

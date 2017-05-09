@@ -1,6 +1,8 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"github.com/spf13/cobra"
+)
 
 var serveCmd = &cobra.Command{
 	Use:   "serve",
@@ -13,5 +15,6 @@ func init() {
 }
 
 func runServeCmd(cmd *cobra.Command, args []string) {
-
+	serf := setupSerf()
+	log.Info(serf.Stats())
 }

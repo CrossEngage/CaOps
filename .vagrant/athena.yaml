@@ -2,8 +2,8 @@ debug : true
 
 cassandra :
 
-  jolokia                   : http://10.2.2.10:8778/jolokia
-  cql                       : 10.2.2.10:9042
+  jolokia                   : http://{{IP}}:8778/jolokia
+  cql                       : {{IP}}:9042
   protocol                  : 4
   timeout                   : 600ms
   keep-alive                : 0
@@ -13,4 +13,4 @@ cassandra :
 
 serf :
 
-  bind : 0.0.0.0:7942
+  bind : {{IP}}:7942

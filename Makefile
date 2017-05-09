@@ -50,3 +50,14 @@ windows: version
 
 dist: linux darwin windows
 	$(info Done.)
+
+
+deploy-c22x:
+	vagrant up c22x01 --provision
+	vagrant up c22x02 --provision
+	vagrant up c22x03 --provision
+
+deploy-c30x:
+	vagrant up c30x01 --provision
+	vagrant up c30x02 --provision
+	vagrant up c30x03 --provision

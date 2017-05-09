@@ -8,35 +8,35 @@ system('.vagrant/ssh.agent.sh')
 templates = {
   'cassandra21x' => { 
     dist: 'ubuntu/xenial64', mem: 1024, cpus: 1,
-    copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra21x.yaml' ], 
+    copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra21x.yaml', '.vagrant/athena.yaml', 'athena' ], 
     exec: { 
       '.vagrant/bootstrap.sh': [ '21x', 'C21xCluster', '10.2.1.10,10.2.1.11,10.2.1.12' ] 
     },
   },
   'cassandra22x' => { 
     dist: 'ubuntu/xenial64', mem: 1024, cpus: 1,
-    copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra22x.yaml' ], 
+    copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra22x.yaml', '.vagrant/athena.yaml', 'athena' ], 
     exec: { 
       '.vagrant/bootstrap.sh': [ '22x', 'C22xCluster', '10.2.2.10,10.2.2.11,10.2.2.12' ] 
     },
   },
   'cassandra30x' => { 
     dist: 'ubuntu/xenial64', mem: 1024, cpus: 1,
-    copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra30x.yaml' ], 
+    copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra30x.yaml', '.vagrant/athena.yaml', 'athena' ], 
     exec: { 
       '.vagrant/bootstrap.sh': [ '30x', 'C22xCluster', '10.3.0.10,10.3.0.11,10.3.0.12' ] 
     },
   },
   'cassandra39x' => { 
     dist: 'ubuntu/xenial64', mem: 1024, cpus: 1,
-    copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra39x.yaml' ], 
+    copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra39x.yaml', '.vagrant/athena.yaml', 'athena' ], 
     exec: { 
       '.vagrant/bootstrap.sh': [ '39x', 'C39xCluster', '10.3.9.10,10.3.9.11,10.3.9.12' ] 
     },
   },
   'cassandra310x' => { 
     dist: 'ubuntu/xenial64', mem: 1024, cpus: 1,
-    copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra310x.yaml' ], 
+    copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra310x.yaml', '.vagrant/athena.yaml', 'athena' ], 
     exec: { 
       '.vagrant/bootstrap.sh': [ '310x', 'C310xCluster', '10.3.10.10,10.3.10.11,10.3.10.12' ] 
     },
