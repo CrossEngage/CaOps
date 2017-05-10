@@ -1,3 +1,3 @@
 package cmd
 
-const version = `heads/master-0-gd533c4a`
+const version = `heads/master-0-gc72d62e-dirty`

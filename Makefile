@@ -52,12 +52,12 @@ dist: linux darwin windows
 	$(info Done.)
 
 
-deploy-c22x:
+deploy-c22x: build
 	vagrant up c22x01 --provision
 	vagrant up c22x02 --provision
 	vagrant up c22x03 --provision
 
-deploy-c30x:
+deploy-c30x: build
 	vagrant up c30x01 --provision
 	vagrant up c30x02 --provision
 	vagrant up c30x03 --provision

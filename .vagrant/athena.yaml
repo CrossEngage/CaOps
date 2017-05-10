@@ -13,4 +13,5 @@ cassandra :
 
 serf :
 
-  bind : {{IP}}:7942
+  bind          : {{IP}}:7942
+  snapshot_path : /tmp/athena.snapshot

@@ -1,4 +1,4 @@
-//go:generate make gen_version
+//go:generate make version
 package main
 
 import "bitbucket.org/crossengage/athena/cmd"

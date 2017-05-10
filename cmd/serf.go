@@ -21,6 +21,7 @@ func setupSerf() *serf.Serf {
 	config.MemberlistConfig.BindAddr = serfBindAddr.IP.String()
 	config.MemberlistConfig.BindPort = serfBindAddr.Port
 	config.EventCh = eventCh
+	config.SnapshotPath = viper.GetString("serf.snapshot_path")
 	log.Debugf("%+v\n", config)
 	serfCli, err := serf.Create(config)
 	if err != nil {

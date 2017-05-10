@@ -1,4 +1,4 @@
-#!/bin/bash -vfx
+#!/bin/bash
 echo "$@"
 
 if [ "$#" -ne 4 ]; then
@@ -66,12 +66,14 @@ then
 	
 	# Athena
 	sudo mkdir /etc/athena
-	cat athena.yaml | sed "s/{{IP}}/$ADDRESS/g" | sudo tee /etc/athena/athena.yaml
-
 	sudo touch /var/run/bootstrapped
 	sudo reboot
 fi
 
-killall athena
+cat athena.yaml | \
+	sed "s/{{IP}}/$ADDRESS/g" | \
+	sudo tee /etc/athena/athena.yaml
+
+sudo killall athena
 sudo cp athena /usr/local/bin/athena
-nohup /usr/local/bin/athena --config /etc/athena/athena.yaml --debug serve &
+# sudo /usr/local/bin/athena --config /etc/athena/athena.yaml --debug serve 2>&1 >/var/log/athena.log &
