@@ -19,7 +19,6 @@
 * Check node status
 * Check cluster status
 
-
 ## To-Do
 
 * job scheduling at cron and at?
@@ -31,8 +30,3 @@
 * cluster log to separate file (serf)
 * glide dep management before 1st release
 * signal handling
-
-
-## URLs
-
-https://jolokia.org/reference/html/agents.html#agents-jvm

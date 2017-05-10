@@ -1,8 +1,14 @@
 package cmd
 
-import "github.com/hashicorp/serf/serf"
-import "github.com/spf13/viper"
-import "net"
+import (
+	"errors"
+	"fmt"
+	"net"
+
+	"bitbucket.org/crossengage/athena/cassandra"
+	"github.com/hashicorp/serf/serf"
+	"github.com/spf13/viper"
+)
 
 var (
 	eventCh chan serf.Event
@@ -28,4 +34,63 @@ func setupSerf() *serf.Serf {
 		log.Fatal(err)
 	}
 	return serfCli
+}
+
+func mustGetEmptyStringList(listErrFunc func() ([]string, error), nonEmptyListError error) error {
+	list, err := listErrFunc()
+	if err != nil {
+		return err
+	}
+	if len(list) > 0 {
+		return nonEmptyListError
+	}
+	return nil
+}
+
+var (
+	errUnreachableCassandraNodes = errors.New("Unreachable Cassandra Nodes")
+	errJoiningCassandraNodes     = errors.New("Joining Cassandra Nodes")
+	errLeavingCassandraNodes     = errors.New("Leaving Cassandra Nodes")
+	errMovingCassandraNodes      = errors.New("Moving Cassandra Nodes")
+)
+
+func stringListToMapKeys(list []string) (ret map[string]bool) {
+	for _, item := range list {
+		ret[item] = true
+	}
+	return
+}
+
+func checkClusterStatus() error {
+	nodeprobe := cassandra.NewNodeProbe(getJolokiaClient())
+	if err := mustGetEmptyStringList(nodeprobe.StorageService.UnreachableNodes, errUnreachableCassandraNodes); err != nil {
+		return err
+	}
+	if err := mustGetEmptyStringList(nodeprobe.StorageService.JoiningNodes, errJoiningCassandraNodes); err != nil {
+		return err
+	}
+	if err := mustGetEmptyStringList(nodeprobe.StorageService.LeavingNodes, errLeavingCassandraNodes); err != nil {
+		return err
+	}
+	if err := mustGetEmptyStringList(nodeprobe.StorageService.MovingNodes, errMovingCassandraNodes); err != nil {
+		return err
+	}
+
+	livenodes, err := nodeprobe.StorageService.LiveNodes()
+	if err != nil {
+		return err
+	}
+
+	liveNodesMap := stringListToMapKeys(livenodes)
+	for _, member := range serfCli.Members() {
+		ip := member.Addr.String()
+		if _, ok := liveNodesMap[ip]; !ok {
+			return fmt.Errorf("Cassandra node %s has not joined this Athena cluster", ip)
+		}
+		if member.Status == serf.StatusAlive {
+			return fmt.Errorf("The Athena node %s is not alive", ip)
+		}
+	}
+
+	return nil
 }

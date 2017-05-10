@@ -41,7 +41,10 @@ func httpServer() {
 
 func snapshotHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	// check cluster status
+	if err := checkClusterStatus(); err != nil {
+		http.Error(w, err.Error(), 500)
+	}
+	// TODO check cluster status
 	payload := fmt.Sprintf("%s.%s", vars["keyspace"], vars["table"])
 	serfCli.UserEvent("Snapshot", []byte(payload), true)
 	io.WriteString(w, "Finished!")
