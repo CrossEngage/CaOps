@@ -22,9 +22,15 @@
 
 ## To-Do
 
+* job scheduling at cron and at?
+* subcommand to trigger backups (http api)
 * Better error handling of Jolokia errors
 * Tests
 * Better code org
+* log to file
+* cluster log to separate file (serf)
+* glide dep management before 1st release
+* signal handling
 
 
 ## URLs

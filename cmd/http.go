@@ -1,32 +1,48 @@
 package cmd
 
-// func httpServer() {
-// 	// subscribe to SIGINT signals
-// 	stopChan := make(chan os.Signal)
-// 	signal.Notify(stopChan, os.Interrupt)
+import (
+	"context"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+	"os/signal"
+	"time"
 
-// 	mux := http.NewServeMux()
+	"github.com/gorilla/mux"
+)
 
-// 	mux.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-// 		time.Sleep(5 * time.Second)
-// 		io.WriteString(w, "Finished!")
-// 	}))
+func httpServer() {
+	// subscribe to SIGINT signals
+	stopChan := make(chan os.Signal)
+	signal.Notify(stopChan, os.Interrupt)
 
-// 	srv := &http.Server{Addr: ":8081", Handler: mux}
+	router := mux.NewRouter()
+	router.Methods("GET").Path("/snapshot/{keyspace}/{table}").HandlerFunc(snapshotHandler)
 
-// 	go func() {
-// 		// service connections
-// 		if err := srv.ListenAndServe(); err != nil {
-// 			log.Printf("listen: %s\n", err)
-// 		}
-// 	}()
+	srv := &http.Server{Addr: ":8081", Handler: router}
 
-// 	<-stopChan // wait for SIGINT
-// 	log.Println("Shutting down server...")
+	go func() {
+		if err := srv.ListenAndServe(); err != nil {
+			log.Error("Error while starting HTTP server", err)
+		}
+	}()
 
-// 	// shut down gracefully, but wait no longer than 5 seconds before halting
-// 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-// 	srv.Shutdown(ctx)
+	<-stopChan // wait for SIGINT
+	log.Info("Shutting down HTTP server...")
 
-// 	log.Println("Server gracefully stopped")
-// }
+	// shut down gracefully, but wait no longer than 5 seconds before halting
+	ctx, cancelFun := context.WithTimeout(context.Background(), 5*time.Second)
+	cancelFun()
+	srv.Shutdown(ctx)
+
+	log.Info("HTTP Server gracefully stopped")
+}
+
+func snapshotHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	// check cluster status
+	payload := fmt.Sprintf("%s.%s", vars["keyspace"], vars["table"])
+	serfCli.UserEvent("Snapshot", []byte(payload), true)
+	io.WriteString(w, "Finished!")
+}

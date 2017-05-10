@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"bitbucket.org/crossengage/athena/cassandra"
+	"github.com/hashicorp/serf/serf"
 	"github.com/spf13/cobra"
 )
 
@@ -18,8 +19,10 @@ func init() {
 	RootCmd.AddCommand(serveCmd)
 }
 
+var serfCli *serf.Serf
+
 func runServeCmd(cmd *cobra.Command, args []string) {
-	serfCli := setupSerf()
+	serfCli = setupSerf()
 	log.Info(serfCli.Stats())
 
 	nodeprobe := cassandra.NewNodeProbe(getJolokiaClient())
@@ -39,6 +42,8 @@ func runServeCmd(cmd *cobra.Command, args []string) {
 	tickerNewSched := time.NewTicker(30 * time.Second)
 
 	var counter int
+
+	go httpServer()
 
 	for {
 		select {
