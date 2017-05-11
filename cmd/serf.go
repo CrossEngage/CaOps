@@ -54,11 +54,12 @@ var (
 	errMovingCassandraNodes      = errors.New("Moving Cassandra Nodes")
 )
 
-func stringListToMapKeys(list []string) (ret map[string]bool) {
+func stringListToMapKeys(list []string) map[string]bool {
+	ret := make(map[string]bool)
 	for _, item := range list {
 		ret[item] = true
 	}
-	return
+	return ret
 }
 
 func checkClusterStatus() error {
@@ -87,7 +88,7 @@ func checkClusterStatus() error {
 		if _, ok := liveNodesMap[ip]; !ok {
 			return fmt.Errorf("Cassandra node %s has not joined this Athena cluster", ip)
 		}
-		if member.Status == serf.StatusAlive {
+		if member.Status != serf.StatusAlive {
 			return fmt.Errorf("The Athena node %s is not alive", ip)
 		}
 	}
