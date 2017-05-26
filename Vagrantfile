@@ -10,61 +10,50 @@ templates = {
     dist: 'ubuntu/xenial64', mem: 1024, cpus: 1,
     copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra21x.yaml', '.vagrant/athena.yaml', 'athena' ], 
     exec: { 
-      '.vagrant/bootstrap.sh': [ '21x', 'C21xCluster', '10.2.1.10,10.2.1.11,10.2.1.12' ] 
+      '.vagrant/bootstrap.sh': [ '21x', 'C21xCluster', '10.127.21.10,10.127.21.11,10.127.21.12' ] 
     },
   },
   'cassandra22x' => { 
     dist: 'ubuntu/xenial64', mem: 1024, cpus: 1,
     copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra22x.yaml', '.vagrant/athena.yaml', 'athena' ], 
     exec: { 
-      '.vagrant/bootstrap.sh': [ '22x', 'C22xCluster', '10.2.2.10,10.2.2.11,10.2.2.12' ] 
+      '.vagrant/bootstrap.sh': [ '22x', 'C22xCluster', '10.127.22.10,10.127.22.11,10.127.22.12' ] 
     },
   },
   'cassandra30x' => { 
     dist: 'ubuntu/xenial64', mem: 1024, cpus: 1,
     copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra30x.yaml', '.vagrant/athena.yaml', 'athena' ], 
     exec: { 
-      '.vagrant/bootstrap.sh': [ '30x', 'C22xCluster', '10.3.0.10,10.3.0.11,10.3.0.12' ] 
+      '.vagrant/bootstrap.sh': [ '30x', 'C22xCluster', '10.127.30.10,10.127.30.11,10.127.30.12' ] 
     },
   },
   'cassandra39x' => { 
     dist: 'ubuntu/xenial64', mem: 1024, cpus: 1,
     copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra39x.yaml', '.vagrant/athena.yaml', 'athena' ], 
     exec: { 
-      '.vagrant/bootstrap.sh': [ '39x', 'C39xCluster', '10.3.9.10,10.3.9.11,10.3.9.12' ] 
-    },
-  },
-  'cassandra310x' => { 
-    dist: 'ubuntu/xenial64', mem: 1024, cpus: 1,
-    copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra310x.yaml', '.vagrant/athena.yaml', 'athena' ], 
-    exec: { 
-      '.vagrant/bootstrap.sh': [ '310x', 'C310xCluster', '10.3.10.10,10.3.10.11,10.3.10.12' ] 
+      '.vagrant/bootstrap.sh': [ '39x', 'C39xCluster', '10.127.39.10,10.127.39.11,10.127.39.12' ] 
     },
   },
 }
 
-netmask = '255.255.255.0'
+netmask = '255.255.0.0'
 
 boxes =  {
-  'c21x01' => { template: 'cassandra21x', ip: '10.2.1.10' },
-  'c21x02' => { template: 'cassandra21x', ip: '10.2.1.11' },
-  'c21x03' => { template: 'cassandra21x', ip: '10.2.1.12' },
+  'c21x01' => { template: 'cassandra21x', ip: '10.127.21.10' },
+  'c21x02' => { template: 'cassandra21x', ip: '10.127.21.11' },
+  'c21x03' => { template: 'cassandra21x', ip: '10.127.21.12' },
 
-  'c22x01' => { template: 'cassandra22x', ip: '10.2.2.10' },
-  'c22x02' => { template: 'cassandra22x', ip: '10.2.2.11' },
-  'c22x03' => { template: 'cassandra22x', ip: '10.2.2.12' },
+  'c22x01' => { template: 'cassandra22x', ip: '10.127.22.10' },
+  'c22x02' => { template: 'cassandra22x', ip: '10.127.22.11' },
+  'c22x03' => { template: 'cassandra22x', ip: '10.127.22.12' },
 
-  'c30x01' => { template: 'cassandra30x', ip: '10.3.0.10' },
-  'c30x02' => { template: 'cassandra30x', ip: '10.3.0.11' },
-  'c30x03' => { template: 'cassandra30x', ip: '10.3.0.12' },
+  'c30x01' => { template: 'cassandra30x', ip: '10.127.30.10' },
+  'c30x02' => { template: 'cassandra30x', ip: '10.127.30.11' },
+  'c30x03' => { template: 'cassandra30x', ip: '10.127.30.12' },
 
-  'c39x01' => { template: 'cassandra39x', ip: '10.3.9.10' },
-  'c39x02' => { template: 'cassandra39x', ip: '10.3.9.11' },
-  'c39x03' => { template: 'cassandra39x', ip: '10.3.9.12' },
-
-  'c310x01' => { template: 'cassandra310x', ip: '10.3.10.10' },
-  'c310x02' => { template: 'cassandra310x', ip: '10.3.10.11' },
-  'c310x03' => { template: 'cassandra310x', ip: '10.3.10.12' },
+  'c39x01' => { template: 'cassandra39x', ip: '10.127.39.10' },
+  'c39x02' => { template: 'cassandra39x', ip: '10.127.39.11' },
+  'c39x03' => { template: 'cassandra39x', ip: '10.127.39.12' },
 }
 
 
