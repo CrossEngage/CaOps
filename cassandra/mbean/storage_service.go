@@ -7,7 +7,7 @@ import (
 
 	"bytes"
 
-	"bitbucket.org/crossengage/athena/cassandra/jolokia"
+	"bitbucket.org/crossengage/athena/jolokia"
 )
 
 // StorageService is analogous to the original StorageService on Cassandra,

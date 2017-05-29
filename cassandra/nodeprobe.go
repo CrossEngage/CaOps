@@ -1,8 +1,8 @@
 package cassandra
 
 import (
-	"bitbucket.org/crossengage/athena/cassandra/jolokia"
 	"bitbucket.org/crossengage/athena/cassandra/mbean"
+	"bitbucket.org/crossengage/athena/jolokia"
 )
 
 // NodeProbe encapsulates JMX interaction with Cassandra in a similar

@@ -6,7 +6,7 @@ import (
 	"net/url"
 
 	"bitbucket.org/crossengage/athena/cassandra"
-	"bitbucket.org/crossengage/athena/cassandra/jolokia"
+	"bitbucket.org/crossengage/athena/jolokia"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
