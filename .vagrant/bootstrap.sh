@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -v
 echo "$@"
 
 if [ "$#" -ne 4 ]; then
@@ -16,9 +16,9 @@ JOLOKIA_VERSION='1.3.6'
 DISTRO_RELEASE=`lsb_release -s -r`
 DISTRO_CODENAME=`lsb_release -s -c`
 
-BOOTSTRAPPED_LOCK='/var/run/bootstrapped.lock'
+BOOTSTRAPPED_LOCK=/etc/bootstrapped.lock
 
-if [ ! -e $BOOSTRAPPED_LOCK ]
+if [ ! -e $BOOTSTRAPPED_LOCK ]
 then
 	# Disable interactive mode
 	sudo mv -v /etc/apt/apt.conf.d/70debconf /root/etc-apt-apt.conf.d-70debconf.bak
@@ -56,8 +56,8 @@ then
 		apt-get -q -y -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" install \
 			cassandra cassandra-tools
 	
-	cat default-cassandra | sudo tee /etc/default/cassandra
-	cat cassandra${CASSANDRA_RELEASE}.yaml | \
+	cat /tmp/default-cassandra | sudo tee /etc/default/cassandra
+	cat /tmp/cassandra${CASSANDRA_RELEASE}.yaml | \
 		sed "s/{{CLUSTER_NAME}}/$CLUSTER_NAME/g" | \
 		sed "s/{{SEEDS}}/$SEEDS/g" | \
 		sed "s/{{LISTEN_ADDRESS}}/$ADDRESS/g" | \
@@ -66,14 +66,20 @@ then
 	
 	# Athena
 	sudo mkdir /etc/athena
-	sudo touch /var/run/bootstrapped
-	sudo reboot
 fi
 
-cat athena.yaml | \
+cat /tmp/athena.yaml | \
 	sed "s/{{IP}}/$ADDRESS/g" | \
 	sudo tee /etc/athena/athena.yaml
 
 sudo killall athena
-sudo cp athena /usr/local/bin/athena
+sudo cp /tmp/athena /usr/local/bin/athena
 # sudo /usr/local/bin/athena --config /etc/athena/athena.yaml --debug serve 2>&1 >/var/log/athena.log &
+
+if [ ! -e $BOOTSTRAPPED_LOCK ]
+then
+	sudo touch $BOOTSTRAPPED_LOCK
+	echo "Going to reboot in 10 seconds..."
+	sleep 10
+	sudo reboot
+fi
