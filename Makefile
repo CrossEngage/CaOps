@@ -1,63 +1,46 @@
-BIN := athena
-LDFLAGS := "-w"
+APPNAME     := athena
+VERSION     := $(shell git describe --all --always --dirty --long)
+LDFLAGS     := "-X bitbucket.org/crossengage/athena/cmd/athena.version=$(VERSION) -X bitbucket.org/crossengage/athena/cmd/athena.appName=$(APPNAME)"
+PLATFORMS   := darwin-386 darwin-amd64 linux-386 linux-amd64 linux-arm windows-386 windows-amd64
+INSTALL_PKG := ./cmd/athena
+BIN_DIR     := ./bin
+DIST_DIR    := ./dist
+APP_BIN     := $(BIN_DIR)/$(APPNAME)
+GO_FILES     = $(shell find ./ -type f -name '*.go')
+
+
+default: build
 
 help:
 	@echo "make [target]"
 	@echo " Targets: "
-	@echo "   linux       Build for Linux amd64 into dist/   "
-	@echo "   darwin      Build for Darwin amd64 into dist/  "
-	@echo "   windows     Build for Windows amd64 into dist/ "
-	@echo "   dist        Build for all above into dist/     "
+	@echo "   build     Build for current OS+Arch into $(BIN_DIR) "
+	@echo "   dist      Build for many platforms into $(DIST_DIR) "
+	@echo "   clean     Cleanup binaries                          "
+	@echo "   deps      Install deps for the project              "
 
 
+.PHONY: clean
 clean:
 	go clean
+	rm -fv $(APP_BIN)
+	rm -fv $(DIST_DIR)/*
 
 
+.PHONY: deps
 deps:
 	go get -v .
 
 
-VERSION := $(shell git describe --all --always --dirty --long)
-.PHONY: version
-version:
-	@printf "package cmd\nconst version=\`$(VERSION)\`\n" | \
-		gofmt | tee cmd/gen_version.go
+build: $(APP_BIN)
+$(APP_BIN): $(GO_FILES)
+	mkdir -p $(BIN_DIR)
+	go build -ldflags=$(LDFLAGS) -o $@ $(INSTALL_PKG)
 
 
-build: version
-	go generate
-	go build -v
-
-
-linux: version
-	$(info Building for Linux 64bits...)
-	go generate && \
-	env GOOS=linux GOHOSTARCH=amd64 go build -ldflags="$(LDFLAGS)" -v -o dist/$(VERSION)/linux-amd64/$(BIN)
-
-
-darwin: version
-	$(info Building for Darwin 64bits...)
-	go generate && \
-	env GOOS=darwin GOHOSTARCH=amd64 go build -ldflags="$(LDFLAGS)" -v -o dist/$(VERSION)/darwin-amd64/$(BIN)
-
-
-windows: version
-	$(info Building for Windows 64bits...)
-	go generate && \
-	env GOOS=windows GOHOSTARCH=amd64 go build -ldflags="$(LDFLAGS)" -v -o dist/$(VERSION)/windows-amd64/$(BIN).exe
-
-
-dist: linux darwin windows
-	$(info Done.)
-
-
-deploy-c22x: build
-	vagrant up c22x01 --provision
-	vagrant up c22x02 --provision
-	vagrant up c22x03 --provision
-
-deploy-c30x: build
-	vagrant up c30x01 --provision
-	vagrant up c30x02 --provision
-	vagrant up c30x03 --provision
+dist: $(PLATFORMS)
+$(PLATFORMS):
+	$(eval GOOS := $(firstword $(subst -, ,$@)))
+	$(eval GOARCH := $(lastword $(subst -, ,$@)))
+	mkdir -p $(DIST_DIR)
+	env GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags=$(LDFLAGS) -o $(DIST_DIR)/$(APPNAME).$@ $(INSTALL_PKG)

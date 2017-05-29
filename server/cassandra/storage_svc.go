@@ -1,28 +1,27 @@
-package mbean
+package cassandra
 
 import (
+	"bytes"
 	"encoding/json"
 	"io"
 	"log"
 
-	"bytes"
-
 	"bitbucket.org/crossengage/athena/jolokia"
 )
 
-// StorageService is analogous to the original StorageService on Cassandra,
+// storageService is analogous to the original storageService on Cassandra,
 // except that all JMX calls are made through a Jolokia agent.
-type StorageService struct {
+type storageService struct {
 	JolokiaClient jolokia.Client
 }
 
 const (
-	storageServicePath = "org.apache.cassandra.db:type=StorageService"
+	storageServicePath = "org.apache.cassandra.db:type=storageService"
 )
 
 // LiveNodes retrieve the list of live nodes in the cluster, where "liveness"
 // is determined by the failure detector of the node being queried.
-func (ss *StorageService) LiveNodes() (ips []string, err error) {
+func (ss *storageService) LiveNodes() (ips []string, err error) {
 	resp, err := ss.JolokiaClient.ReadStringList(storageServicePath + "/LiveNodes")
 	if err != nil {
 		return nil, err
@@ -32,7 +31,7 @@ func (ss *StorageService) LiveNodes() (ips []string, err error) {
 
 // UnreachableNodes retrieve the list of unreachable nodes in the cluster, as
 // determined by this node's failure detector.
-func (ss *StorageService) UnreachableNodes() (ips []string, err error) {
+func (ss *storageService) UnreachableNodes() (ips []string, err error) {
 	resp, err := ss.JolokiaClient.ReadStringList(storageServicePath + "/UnreachableNodes")
 	if err != nil {
 		return nil, err
@@ -41,7 +40,7 @@ func (ss *StorageService) UnreachableNodes() (ips []string, err error) {
 }
 
 // JoiningNodes retrieve the list of nodes currently bootstrapping into the ring.
-func (ss *StorageService) JoiningNodes() (ips []string, err error) {
+func (ss *storageService) JoiningNodes() (ips []string, err error) {
 	resp, err := ss.JolokiaClient.ReadStringList(storageServicePath + "/JoiningNodes")
 	if err != nil {
 		return nil, err
@@ -50,7 +49,7 @@ func (ss *StorageService) JoiningNodes() (ips []string, err error) {
 }
 
 // LeavingNodes retrieve the list of nodes currently leaving the ring.
-func (ss *StorageService) LeavingNodes() (ips []string, err error) {
+func (ss *storageService) LeavingNodes() (ips []string, err error) {
 	resp, err := ss.JolokiaClient.ReadStringList(storageServicePath + "/LeavingNodes")
 	if err != nil {
 		return nil, err
@@ -59,7 +58,7 @@ func (ss *StorageService) LeavingNodes() (ips []string, err error) {
 }
 
 // MovingNodes retrieve the list of nodes currently moving in the ring.
-func (ss *StorageService) MovingNodes() (ips []string, err error) {
+func (ss *storageService) MovingNodes() (ips []string, err error) {
 	resp, err := ss.JolokiaClient.ReadStringList(storageServicePath + "/MovingNodes")
 	if err != nil {
 		return nil, err
@@ -68,7 +67,7 @@ func (ss *StorageService) MovingNodes() (ips []string, err error) {
 }
 
 // Tokens fetch string representations of the tokens for this node.
-func (ss *StorageService) Tokens() ([]string, error) {
+func (ss *storageService) Tokens() ([]string, error) {
 	resp, err := ss.JolokiaClient.ReadStringList(storageServicePath + "/Tokens")
 	if err != nil {
 		return nil, err
@@ -77,7 +76,7 @@ func (ss *StorageService) Tokens() ([]string, error) {
 }
 
 // ReleaseVersion fetch a string representation of the Cassandra version.
-func (ss *StorageService) ReleaseVersion() (version string, err error) {
+func (ss *storageService) ReleaseVersion() (version string, err error) {
 	resp, err := ss.JolokiaClient.ReadString(storageServicePath + "/ReleaseVersion")
 	if err != nil {
 		return "", err
@@ -86,7 +85,7 @@ func (ss *StorageService) ReleaseVersion() (version string, err error) {
 }
 
 // SchemaVersion fetch a string representation of the current Schema version.
-func (ss *StorageService) SchemaVersion() (version string, err error) {
+func (ss *storageService) SchemaVersion() (version string, err error) {
 	resp, err := ss.JolokiaClient.ReadString(storageServicePath + "/SchemaVersion")
 	if err != nil {
 		return "", err
@@ -95,7 +94,7 @@ func (ss *StorageService) SchemaVersion() (version string, err error) {
 }
 
 // AllDataFileLocations returns the list of all data file locations from conf
-func (ss *StorageService) AllDataFileLocations() (paths []string, err error) {
+func (ss *storageService) AllDataFileLocations() (paths []string, err error) {
 	resp, err := ss.JolokiaClient.ReadStringList(storageServicePath + "/AllDataFileLocations")
 	if err != nil {
 		return nil, err
@@ -104,7 +103,7 @@ func (ss *StorageService) AllDataFileLocations() (paths []string, err error) {
 }
 
 // CommitLogLocation returns the location of the commit log
-func (ss *StorageService) CommitLogLocation() (string, error) {
+func (ss *storageService) CommitLogLocation() (string, error) {
 	resp, err := ss.JolokiaClient.ReadString(storageServicePath + "/CommitLogLocation")
 	if err != nil {
 		return "", err
@@ -113,7 +112,7 @@ func (ss *StorageService) CommitLogLocation() (string, error) {
 }
 
 // SavedCachesLocation returns the location of the saved caches dir
-func (ss *StorageService) SavedCachesLocation() (string, error) {
+func (ss *storageService) SavedCachesLocation() (string, error) {
 	resp, err := ss.JolokiaClient.ReadString(storageServicePath + "/SavedCachesLocation")
 	if err != nil {
 		return "", err
@@ -124,20 +123,20 @@ func (ss *StorageService) SavedCachesLocation() (string, error) {
 // // Retrieve a map of range to end points that describe the ring topology
 // // of a Cassandra cluster.
 // // Map<List<String>, List<String>>
-// func (ss *StorageService) RangeToEndpointMap(keyspace string) map[[]string][]string {}
+// func (ss *storageService) RangeToEndpointMap(keyspace string) map[[]string][]string {}
 
 // // Retrieve a map of range to rpc addresses that describe the ring topology
 // // of a Cassandra cluster.
-// func (ss *StorageService) RangeToRpcaddressMap(keyspace string) map[[]string][]string {}
+// func (ss *storageService) RangeToRpcaddressMap(keyspace string) map[[]string][]string {}
 
 // // The TokenRange for a given keyspace.
-// func (ss *StorageService) DescribeRingJMX(keyspace string) (tokenRange []string) {}
+// func (ss *storageService) DescribeRingJMX(keyspace string) (tokenRange []string) {}
 
 // // Retrieve a map of pending ranges to endpoints that describe the ring topology
-// func (ss *StorageService) PendingRangeToEndpointMap(keyspace string) map[[]string][]string {}
+// func (ss *storageService) PendingRangeToEndpointMap(keyspace string) map[[]string][]string {}
 
 // TokenToEndpointMap retrieve a map of tokens to endpoints, including the bootstrapping ones.
-func (ss *StorageService) TokenToEndpointMap() (map[string]string, error) {
+func (ss *storageService) TokenToEndpointMap() (map[string]string, error) {
 	resp, err := ss.JolokiaClient.ReadStringMapString(storageServicePath + "/TokenToEndpointMap")
 	if err != nil {
 		return nil, err
@@ -146,7 +145,7 @@ func (ss *StorageService) TokenToEndpointMap() (map[string]string, error) {
 }
 
 // LocalHostID returns the hosts unique ID
-func (ss *StorageService) LocalHostID() (string, error) {
+func (ss *storageService) LocalHostID() (string, error) {
 	resp, err := ss.JolokiaClient.ReadString(storageServicePath + "/LocalHostId")
 	if err != nil {
 		return "", err
@@ -155,7 +154,7 @@ func (ss *StorageService) LocalHostID() (string, error) {
 }
 
 // EndpointToHostID retrieve the mapping of endpoint to host ID
-func (ss *StorageService) EndpointToHostID() (map[string]string, error) {
+func (ss *storageService) EndpointToHostID() (map[string]string, error) {
 	resp, err := ss.JolokiaClient.ReadStringMapString(storageServicePath + "/EndpointToHostId")
 	if err != nil {
 		return nil, err
@@ -164,7 +163,7 @@ func (ss *StorageService) EndpointToHostID() (map[string]string, error) {
 }
 
 // HostIDToEndpoint retrieve the mapping of host ID to endpoint
-func (ss *StorageService) HostIDToEndpoint() (map[string]string, error) {
+func (ss *storageService) HostIDToEndpoint() (map[string]string, error) {
 	resp, err := ss.JolokiaClient.ReadStringMapString(storageServicePath + "/HostIdToEndpoint")
 	if err != nil {
 		return nil, err
@@ -173,7 +172,7 @@ func (ss *StorageService) HostIDToEndpoint() (map[string]string, error) {
 }
 
 // LoadString human-readable load value
-func (ss *StorageService) LoadString() (string, error) {
+func (ss *storageService) LoadString() (string, error) {
 	resp, err := ss.JolokiaClient.ReadString(storageServicePath + "/LoadString")
 	if err != nil {
 		return "", err
@@ -182,7 +181,7 @@ func (ss *StorageService) LoadString() (string, error) {
 }
 
 // LoadMap human-readable load value. Keys are IP addresses.
-func (ss *StorageService) LoadMap() (map[string]string, error) {
+func (ss *storageService) LoadMap() (map[string]string, error) {
 	resp, err := ss.JolokiaClient.ReadStringMapString(storageServicePath + "/LoadMap")
 	if err != nil {
 		return nil, err
@@ -192,10 +191,10 @@ func (ss *StorageService) LoadMap() (map[string]string, error) {
 
 // // This method returns the N endpoints that are responsible for storing the
 // // specified key i.e for replication.
-// func (ss *StorageService) NaturalEndpoints(keyspaceName, cf, key string) []net.IP {}
+// func (ss *storageService) NaturalEndpoints(keyspaceName, cf, key string) []net.IP {}
 
 // TakeSnapshot is self-explanatory
-func (ss *StorageService) TakeSnapshot(tag string, keyspaces ...string) error {
+func (ss *storageService) TakeSnapshot(tag string, keyspaces ...string) error {
 	args := make([]interface{}, 2)
 	args[0] = tag
 	args[1] = keyspaces
@@ -208,7 +207,7 @@ func (ss *StorageService) TakeSnapshot(tag string, keyspaces ...string) error {
 }
 
 // TakeTableSnapshot is self-explanatory
-func (ss *StorageService) TakeTableSnapshot(tag, keyspace, table string) error {
+func (ss *storageService) TakeTableSnapshot(tag, keyspace, table string) error {
 	args := make([]interface{}, 3)
 	args[0] = keyspace
 	args[1] = table
@@ -223,7 +222,7 @@ func (ss *StorageService) TakeTableSnapshot(tag, keyspace, table string) error {
 
 // TakeMultipleTableSnapshot takes the snapshot of a multiple column family from different
 // keyspaces. A snapshot name must be specified.
-func (ss *StorageService) TakeMultipleTableSnapshot(tag string, tableList ...string) error {
+func (ss *storageService) TakeMultipleTableSnapshot(tag string, tableList ...string) error {
 	args := make([]interface{}, 2)
 	args[0] = tag
 	args[1] = tableList
@@ -237,7 +236,7 @@ func (ss *StorageService) TakeMultipleTableSnapshot(tag string, tableList ...str
 
 // ClearSnapshot remove the snapshot with the given name from the given keyspaces.
 // If no tag is specified we will remove all snapshots.
-func (ss *StorageService) ClearSnapshot(tag string, keyspaces ...string) error {
+func (ss *storageService) ClearSnapshot(tag string, keyspaces ...string) error {
 	args := make([]interface{}, 2)
 	args[0] = tag
 	args[1] = keyspaces
@@ -270,7 +269,7 @@ func (sd *SnapshotDetails) UnmarshalJSON(buf []byte) error {
 		return err
 	}
 
-	// Yes, I know this is ugly, but it was the faster way to decode a mess
+	// Yes, I know this is ugly, but it was the faster (quick-and-dirty) way to decode a mess
 	for _, lv1 := range rawMaps {
 		for _, lv2 := range lv1 {
 			for _, lv3 := range lv2 {
@@ -307,14 +306,14 @@ func (sdr *SnapshotDetailsResponse) DecodeJSON(r io.Reader) error {
 }
 
 // SnapshotDetails get the details of all the snapshots
-func (ss *StorageService) SnapshotDetails() (*SnapshotDetailsResponse, error) {
+func (ss *storageService) SnapshotDetails() (*SnapshotDetailsResponse, error) {
 	details := &SnapshotDetailsResponse{}
 	err := ss.JolokiaClient.ReadInto(storageServicePath+"/SnapshotDetails", details)
 	return details, err
 }
 
 // AllSnapshotsSize get the true size taken by all snapshots across all keyspaces.
-func (ss *StorageService) AllSnapshotsSize() (uint64, error) {
+func (ss *storageService) AllSnapshotsSize() (uint64, error) {
 	response := &jolokia.Uint64ValueResponse{}
 	err := ss.JolokiaClient.ExecInto(response, storageServicePath, "trueSnapshotsSize")
 	if err != nil {
@@ -326,7 +325,7 @@ func (ss *StorageService) AllSnapshotsSize() (uint64, error) {
 
 // RefreshSizeEstimates forces refresh of values stored in system.size_estimates of all
 // column families.
-func (ss *StorageService) refreshSizeEstimates() error {
+func (ss *storageService) refreshSizeEstimates() error {
 	r, err := ss.JolokiaClient.Exec(storageServicePath, "refreshSizeEstimates")
 	if err != nil {
 		return err
@@ -338,12 +337,12 @@ func (ss *StorageService) refreshSizeEstimates() error {
 // // Verify (checksums of) the given keyspace.
 // // If tableNames array is empty, all CFs are verified.
 // // The entire sstable will be read to ensure each cell validates if extendedVerify is true
-// func (ss *StorageService) verify(extendedVerify bool, keyspaceName string, tableNames ...string) (int, error) {
+// func (ss *storageService) verify(extendedVerify bool, keyspaceName string, tableNames ...string) (int, error) {
 // }
 
 // ForceKeyspaceFlush flush all memtables for the given column families, or all columnfamilies for
 // the given keyspace if none are explicitly listed.
-func (ss *StorageService) ForceKeyspaceFlush(keyspace string, tables ...string) error {
+func (ss *storageService) ForceKeyspaceFlush(keyspace string, tables ...string) error {
 	args := make([]interface{}, 2)
 	args[0] = keyspace
 	args[1] = tables
@@ -356,7 +355,7 @@ func (ss *StorageService) ForceKeyspaceFlush(keyspace string, tables ...string) 
 }
 
 // Starting returns whether the storage service is starting or not
-func (ss *StorageService) Starting() (bool, error) {
+func (ss *storageService) Starting() (bool, error) {
 	resp, err := ss.JolokiaClient.ReadBool(storageServicePath + "/IsStarting")
 	if err != nil {
 		return false, err
@@ -365,7 +364,7 @@ func (ss *StorageService) Starting() (bool, error) {
 }
 
 // GossipRunning returns whether the gossip is running
-func (ss *StorageService) GossipRunning() (bool, error) {
+func (ss *storageService) GossipRunning() (bool, error) {
 	resp, err := ss.JolokiaClient.ReadBool(storageServicePath + "/GossipRunning")
 	if err != nil {
 		return false, err
@@ -378,10 +377,10 @@ func (ss *StorageService) GossipRunning() (bool, error) {
 // // If Keyspace == null, this method will try to verify if all the keyspaces
 // // in the cluster have the same replication strategies and if yes then we will
 // // use the first else a empty Map is returned.
-// func (ss *StorageService) effectiveOwnership(keyspace string) (map[net.IP]float, error) {}
+// func (ss *storageService) effectiveOwnership(keyspace string) (map[net.IP]float, error) {}
 
 // Keyspaces return the list of keyspaces in the cluster
-func (ss *StorageService) Keyspaces() ([]string, error) {
+func (ss *storageService) Keyspaces() ([]string, error) {
 	resp, err := ss.JolokiaClient.ReadStringList(storageServicePath + "/Keyspaces")
 	if err != nil {
 		return nil, err
@@ -390,7 +389,7 @@ func (ss *StorageService) Keyspaces() ([]string, error) {
 }
 
 // NonSystemKeyspaces ...
-func (ss *StorageService) NonSystemKeyspaces() ([]string, error) {
+func (ss *storageService) NonSystemKeyspaces() ([]string, error) {
 	resp, err := ss.JolokiaClient.ReadStringList(storageServicePath + "/NonSystemKeyspaces")
 	if err != nil {
 		return nil, err
@@ -400,7 +399,7 @@ func (ss *StorageService) NonSystemKeyspaces() ([]string, error) {
 
 // OperationMode returns the operation mode of the node. STARTING, NORMAL, JOINING,
 // LEAVING, DECOMMISSIONED, MOVING, DRAINING, DRAINED.
-func (ss *StorageService) OperationMode() (string, error) {
+func (ss *storageService) OperationMode() (string, error) {
 	resp, err := ss.JolokiaClient.ReadString(storageServicePath + "/OperationMode")
 	if err != nil {
 		return "", err
@@ -409,7 +408,7 @@ func (ss *StorageService) OperationMode() (string, error) {
 }
 
 // IncrementalBackupsEnabled is self explanatory
-func (ss *StorageService) IncrementalBackupsEnabled() (bool, error) {
+func (ss *storageService) IncrementalBackupsEnabled() (bool, error) {
 	resp, err := ss.JolokiaClient.ReadBool(storageServicePath + "/IncrementalBackupsEnabled")
 	if err != nil {
 		return false, err
@@ -418,7 +417,7 @@ func (ss *StorageService) IncrementalBackupsEnabled() (bool, error) {
 }
 
 // Initialized is self explanatory
-func (ss *StorageService) Initialized() (bool, error) {
+func (ss *storageService) Initialized() (bool, error) {
 	resp, err := ss.JolokiaClient.ReadBool(storageServicePath + "/Initialized")
 	if err != nil {
 		return false, err
@@ -427,7 +426,7 @@ func (ss *StorageService) Initialized() (bool, error) {
 }
 
 // Joined is self explanatory
-func (ss *StorageService) Joined() (bool, error) {
+func (ss *storageService) Joined() (bool, error) {
 	resp, err := ss.JolokiaClient.ReadBool(storageServicePath + "/Joined")
 	if err != nil {
 		return false, err
@@ -436,7 +435,7 @@ func (ss *StorageService) Joined() (bool, error) {
 }
 
 // ClusterName returns the name of the cluster
-func (ss *StorageService) ClusterName() (name string, err error) {
+func (ss *storageService) ClusterName() (name string, err error) {
 	resp, err := ss.JolokiaClient.ReadString(storageServicePath + "/ClusterName")
 	if err != nil {
 		return "", err
@@ -445,7 +444,7 @@ func (ss *StorageService) ClusterName() (name string, err error) {
 }
 
 // PartitionerName returns the cluster partitioner
-func (ss *StorageService) PartitionerName() (name string, err error) {
+func (ss *storageService) PartitionerName() (name string, err error) {
 	resp, err := ss.JolokiaClient.ReadString(storageServicePath + "/PartitionerName")
 	if err != nil {
 		return "", err

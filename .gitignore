@@ -4,4 +4,7 @@ athena
 *.swp
 *.bak
 
+/bin/
+/dist/
+
 /.vagrant/machines/
