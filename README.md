@@ -4,7 +4,6 @@
 
 * Interacts with Cassandra via Jolokia+JMX
 * Uses Cassandra as a backing storage
-* Has subcommands to handle bootstrapping separately of serving
 * Pools every 30 seconds for new scheduled jobs
 
 * Daemon with HTTP API
@@ -30,3 +29,15 @@
 * cluster log to separate file (serf)
 * glide dep management before 1st release
 * signal handling
+
+## Priam
+
+* Token management using SimpleDB
+* Support multi-region Cassandra deployment in AWS via public IP.
+* Automated security group update in multi-region environment.
+* Backup SSTables from local ephemeral disks to S3.
+* Uses Snappy compression to compress backup data on the fly.
+* Backup throttling
+* Pluggable modules for future enhancements (support for multiple data storage).
+* APIs to list and restore backup data.
+* REST APIs for backup/restore and other operations
