@@ -1,6 +1,6 @@
 APPNAME     := athena
 VERSION     := $(shell git describe --all --always --dirty --long)
-LDFLAGS     := "-X bitbucket.org/crossengage/athena/cmd/athena.version=$(VERSION) -X bitbucket.org/crossengage/athena/cmd/athena.appName=$(APPNAME)"
+LDFLAGS     := "-X main.appName=$(APPNAME) -X main.version=$(VERSION)"
 PLATFORMS   := darwin-386 darwin-amd64 linux-386 linux-amd64 linux-arm windows-386 windows-amd64
 INSTALL_PKG := ./cmd/athena
 BIN_DIR     := ./bin
@@ -9,8 +9,11 @@ APP_BIN     := $(BIN_DIR)/$(APPNAME)
 GO_FILES     = $(shell find ./ -type f -name '*.go')
 
 
+.PHONY: default
 default: build
 
+
+.PHONY: help
 help:
 	@echo "make [target]"
 	@echo " Targets: "
