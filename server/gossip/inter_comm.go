@@ -2,6 +2,9 @@ package gossip
 
 import (
 	"net"
+	"path/filepath"
+
+	"os"
 
 	"github.com/hashicorp/serf/serf"
 	logging "github.com/op/go-logging"
@@ -18,6 +21,10 @@ type InterComm struct {
 func NewInterComm(log *logging.Logger, bindTo, snapshotPath string) (*InterComm, error) {
 	serfBindAddr, err := net.ResolveTCPAddr("tcp", bindTo)
 	if err != nil {
+		return nil, err
+	}
+
+	if err := os.MkdirAll(filepath.Dir(snapshotPath), os.FileMode(0770)); err != nil {
 		return nil, err
 	}
 
@@ -62,32 +69,3 @@ func (ic *InterComm) AliveMembers() []string {
 	}
 	return ips
 }
-
-// func checkClusterStatus() error {
-
-// 	livenodes, err := nodeprobe.StorageService.LiveNodes()
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	liveNodesMap := stringListToMapKeys(livenodes)
-// 	for _, member := range serfCli.Members() {
-// 		ip := member.Addr.String()
-// 		if _, ok := liveNodesMap[ip]; !ok {
-// 			return fmt.Errorf("Cassandra node %s has not joined this Athena cluster", ip)
-// 		}
-// 		if member.Status != serf.StatusAlive {
-// 			return fmt.Errorf("The Athena node %s is not alive", ip)
-// 		}
-// 	}
-
-// 	return nil
-// }
-
-// func stringListToMapKeys(list []string) map[string]bool {
-// 	ret := make(map[string]bool)
-// 	for _, item := range list {
-// 		ret[item] = true
-// 	}
-// 	return ret
-// }

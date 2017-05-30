@@ -8,28 +8,28 @@ system('.vagrant/ssh.agent.sh')
 templates = {
   'cassandra21x' => { 
     dist: 'ubuntu/xenial64', mem: 1024, cpus: 1,
-    copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra21x.yaml', '.vagrant/athena.yaml', './athena' ], 
+    copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra21x.yaml', '.vagrant/athena.yaml', './bin/athena', '.vagrant/athena.service' ], 
     exec: { 
       '.vagrant/bootstrap.sh': [ '21x', 'C21xCluster', '10.127.21.10,10.127.21.11,10.127.21.12' ] 
     },
   },
   'cassandra22x' => { 
     dist: 'ubuntu/xenial64', mem: 1024, cpus: 1,
-    copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra22x.yaml', '.vagrant/athena.yaml', './athena' ], 
+    copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra22x.yaml', '.vagrant/athena.yaml', './bin/athena', '.vagrant/athena.service' ], 
     exec: { 
       '.vagrant/bootstrap.sh': [ '22x', 'C22xCluster', '10.127.22.10,10.127.22.11,10.127.22.12' ] 
     },
   },
   'cassandra30x' => { 
     dist: 'ubuntu/xenial64', mem: 1024, cpus: 1,
-    copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra30x.yaml', '.vagrant/athena.yaml', './athena' ], 
+    copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra30x.yaml', '.vagrant/athena.yaml', './bin/athena', '.vagrant/athena.service' ], 
     exec: { 
       '.vagrant/bootstrap.sh': [ '30x', 'C22xCluster', '10.127.30.10,10.127.30.11,10.127.30.12' ] 
     },
   },
   'cassandra39x' => { 
     dist: 'ubuntu/xenial64', mem: 1024, cpus: 1,
-    copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra39x.yaml', '.vagrant/athena.yaml', './athena' ], 
+    copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra39x.yaml', '.vagrant/athena.yaml', './bin/athena', '.vagrant/athena.service' ], 
     exec: { 
       '.vagrant/bootstrap.sh': [ '39x', 'C39xCluster', '10.127.39.10,10.127.39.11,10.127.39.12' ] 
     },

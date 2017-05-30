@@ -43,7 +43,11 @@ then
 	
 	# Install base pkgs
 	sudo apt-get install language-pack-en -y
-	
+
+	# Setup Timezone
+	echo "Europe/Berlin" | sudo tee /etc/timezone
+	sudo dpkg-reconfigure --frontend noninteractive tzdata
+
 	# Java
 	sudo apt-get -y install openjdk-8-jdk
 	
@@ -72,9 +76,12 @@ cat /tmp/athena.yaml | \
 	sed "s/{{IP}}/$ADDRESS/g" | \
 	sudo tee /etc/athena/athena.yaml
 
-sudo killall athena
+cat /tmp/athena.service | sudo tee /etc/systemd/system/athena.service
+systemctl enable athena
+
+sudo systemctl stop athena
 sudo cp /tmp/athena /usr/local/bin/athena
-# sudo /usr/local/bin/athena --config /etc/athena/athena.yaml --debug serve 2>&1 >/var/log/athena.log &
+sudo systemctl start athena
 
 if [ ! -e $BOOTSTRAPPED_LOCK ]
 then

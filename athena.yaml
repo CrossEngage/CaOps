@@ -1,5 +1,5 @@
 debug                 : true
 api.server.bind_addr  : :8080
-gossip.bind_addr      : :7942
+gossip.bind_addr      : 10.127.0.1:7942
 gossip.snapshot_path  : /tmp/athena/gossip
-cassandra.jolokia_url : http://127.0.0.1:8778/jolokia
+cassandra.jolokia_url : http://10.127.22.10:8778/jolokia

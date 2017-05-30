@@ -1,5 +1,5 @@
 debug                 : true
 api.server.bind_addr  : :8080
 gossip.bind_addr      : {{IP}}:7942
-gossip.snapshot_path  : /tmp/athena/gossip
+gossip.snapshot_path  : /var/lib/athena/gossip
 cassandra.jolokia_url : http://{{IP}}:8778/jolokia

@@ -27,6 +27,9 @@ func NewAthena(log *logging.Logger, apiServerBindAddr, gossipBindAddr, gossipSna
 
 // Run starts the agent and the HTTP API server, and blocks, until it is finished
 func (athena *Athena) Run() {
+	if err := athena.agent.Start(); err != nil {
+		log.Fatal(err)
+	}
 	if err := athena.apiServer.ListenAndServe(); err != nil {
 		log.Fatal(err)
 	}
