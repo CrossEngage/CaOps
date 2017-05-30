@@ -4,16 +4,18 @@ import (
 	"net"
 
 	"github.com/hashicorp/serf/serf"
+	logging "github.com/op/go-logging"
 )
 
 // InterComm handles inter-agent communication
 type InterComm struct {
+	log     *logging.Logger
 	eventCh chan serf.Event
 	serf    *serf.Serf
 }
 
 // NewInterComm constructs a new InterComm object that handles inter-agent communication
-func NewInterComm(bindTo, snapshotPath string) (*InterComm, error) {
+func NewInterComm(log *logging.Logger, bindTo, snapshotPath string) (*InterComm, error) {
 	serfBindAddr, err := net.ResolveTCPAddr("tcp", bindTo)
 	if err != nil {
 		return nil, err
@@ -32,10 +34,22 @@ func NewInterComm(bindTo, snapshotPath string) (*InterComm, error) {
 	}
 
 	interComm := &InterComm{
+		log:     log,
 		eventCh: eventCh,
 		serf:    serfCli,
 	}
 	return interComm, nil
+}
+
+// Join ...
+func (ic *InterComm) Join(nodes []string) error {
+	contacted, err := ic.serf.Join(nodes, false)
+	if err != nil {
+		ic.log.Errorf("Contacted %d nodes, but %s", contacted, err)
+		return err
+	}
+	ic.log.Debugf("Contacted %d nodes", contacted)
+	return nil
 }
 
 // AliveMembers return the IPs of all Athena agents that are alive

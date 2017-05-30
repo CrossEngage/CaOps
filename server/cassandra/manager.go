@@ -9,6 +9,7 @@ import (
 
 // Manager handles all interaction with a Cassandra node and cluster
 type Manager struct {
+	jolokiaClient  *jolokia.Client
 	storageService *storageService
 }
 
@@ -18,8 +19,10 @@ func NewManager(jolokiaAddr string) (*Manager, error) {
 	if err != nil {
 		return nil, err
 	}
+	jolokiaClient := &jolokia.Client{HTTPClient: http.DefaultClient, BaseURL: *jolokiaURL}
 	manager := &Manager{
-		storageService: &storageService{jolokia.Client{HTTPClient: http.DefaultClient, BaseURL: *jolokiaURL}},
+		storageService: &storageService{},
+		jolokiaClient:  jolokiaClient,
 	}
 	return manager, nil
 }
@@ -46,8 +49,27 @@ func (m *Manager) CheckClusterStability() error {
 	return nil
 }
 
-// LiveNodes return a list of IPs of the Cassandra nodes
-// with status=LIVE
+// LiveNodes return a list of IPs of the Cassandra nodes with status=LIVE
 func (m *Manager) LiveNodes() ([]string, error) {
 	return m.storageService.LiveNodes()
+}
+
+// JolokiaAgentVersion returns the version of the Jolokia Agent running
+// into the Cassandra's JVM
+func (m *Manager) JolokiaAgentVersion() (string, error) {
+	verResp, err := m.jolokiaClient.Version()
+	if err != nil {
+		return "", err
+	}
+	return verResp.Value.Agent, nil
+}
+
+// CassandraVersion returns the version of the Cassandra node this manager
+// is connected to
+func (m *Manager) CassandraVersion() (string, error) {
+	cver, err := m.storageService.ReleaseVersion()
+	if err != nil {
+		return "", err
+	}
+	return cver, nil
 }
