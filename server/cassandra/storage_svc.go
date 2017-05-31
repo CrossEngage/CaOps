@@ -16,7 +16,7 @@ type storageService struct {
 }
 
 const (
-	storageServicePath = "org.apache.cassandra.db:type=storageService"
+	storageServicePath = "org.apache.cassandra.db:type=StorageService"
 )
 
 // LiveNodes retrieve the list of live nodes in the cluster, where "liveness"
