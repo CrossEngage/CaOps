@@ -39,7 +39,7 @@ deps:
 build: $(APP_BIN)
 $(APP_BIN): $(GO_FILES)
 	mkdir -p $(BIN_DIR)
-	go build -ldflags=$(LDFLAGS) -o $@ $(INSTALL_PKG)
+	go build -race -ldflags=$(LDFLAGS) -o $@ $(INSTALL_PKG)
 
 
 dist: $(PLATFORMS)
