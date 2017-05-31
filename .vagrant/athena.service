@@ -3,7 +3,7 @@ Description=Athena Cassandra Agent
 After=cassandra.service
 
 [Service]
-ExecStart=/usr/local/bin/athena --config /etc/athena/athena.yaml --debug serve
+ExecStart=/usr/local/bin/athena --config /etc/athena/athena.yaml serve
 
 [Install]
 WantedBy=multi-user.target
