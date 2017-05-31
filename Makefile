@@ -50,9 +50,9 @@ $(PLATFORMS):
 	env GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags=$(LDFLAGS) -o $(DIST_DIR)/$(APPNAME).$@ $(INSTALL_PKG)
 
 
-dev_vms:
+dev_vms: build
 	for i in `seq 1 3`; do vagrant up $(DEV_CASS_VER)x0$$i; done
 
 
-provision:
+provision: build
 	for i in `seq 1 3`; do vagrant up $(DEV_CASS_VER)x0$$i --provision; done

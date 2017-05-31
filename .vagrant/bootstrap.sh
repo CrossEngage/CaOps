@@ -77,11 +77,12 @@ cat /tmp/athena.yaml | \
 	sudo tee /etc/athena/athena.yaml
 
 cat /tmp/athena.service | sudo tee /etc/systemd/system/athena.service
-systemctl enable athena
+sudo systemctl daemon-reload
+systemctl enable athena.service
 
-sudo systemctl stop athena
+sudo systemctl stop athena.service
 sudo cp /tmp/athena /usr/local/bin/athena
-sudo systemctl start athena
+sudo systemctl start athena.service
 
 if [ ! -e $BOOTSTRAPPED_LOCK ]
 then

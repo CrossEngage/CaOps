@@ -1,8 +1,10 @@
 [Unit]
 Description=Athena Cassandra Agent
+After=cassandra.service
 
 [Service]
 ExecStart=/usr/local/bin/athena --config /etc/athena/athena.yaml --debug serve
 
 [Install]
 WantedBy=multi-user.target
+Requires=cassandra.service
