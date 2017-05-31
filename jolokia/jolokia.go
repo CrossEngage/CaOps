@@ -11,19 +11,24 @@ import (
 
 // Client implements a Jolokia client inspired by the official Java client
 type Client struct {
-	HTTPClient *http.Client
-	BaseURL    url.URL
+	httpClient http.Client
+	baseURL    url.URL
 }
 
-func (c *Client) getURL(path string) string {
-	url := c.BaseURL
+// NewClient builds a new Jolokia Agent client object
+func NewClient(httpClient http.Client, baseURL url.URL) Client {
+	return Client{httpClient: httpClient, baseURL: baseURL}
+}
+
+func (c Client) getURL(path string) string {
+	url := c.baseURL
 	url.Path += path
 	return url.String()
 }
 
 // ReadInto ...
-func (c *Client) ReadInto(mbean string, response ValueResponse) (err error) {
-	resp, err := c.HTTPClient.Get(c.getURL("/read/" + mbean))
+func (c Client) ReadInto(mbean string, response ValueResponse) (err error) {
+	resp, err := c.httpClient.Get(c.getURL("/read/" + mbean))
 	if err != nil {
 		return err
 	}
@@ -37,8 +42,8 @@ func (c *Client) ReadInto(mbean string, response ValueResponse) (err error) {
 }
 
 // ReadStringList ...
-func (c *Client) ReadStringList(mbean string) (vr *StringListValueResponse, err error) {
-	resp, err := c.HTTPClient.Get(c.getURL("/read/" + mbean))
+func (c Client) ReadStringList(mbean string) (vr *StringListValueResponse, err error) {
+	resp, err := c.httpClient.Get(c.getURL("/read/" + mbean))
 	if err != nil {
 		return nil, err
 	}
@@ -53,8 +58,8 @@ func (c *Client) ReadStringList(mbean string) (vr *StringListValueResponse, err 
 }
 
 // ReadString ...
-func (c *Client) ReadString(mbean string) (vr *StringValueResponse, err error) {
-	resp, err := c.HTTPClient.Get(c.getURL("/read/" + mbean))
+func (c Client) ReadString(mbean string) (vr *StringValueResponse, err error) {
+	resp, err := c.httpClient.Get(c.getURL("/read/" + mbean))
 	if err != nil {
 		return nil, err
 	}
@@ -69,8 +74,8 @@ func (c *Client) ReadString(mbean string) (vr *StringValueResponse, err error) {
 }
 
 // ReadStringMapString ...
-func (c *Client) ReadStringMapString(mbean string) (vr *StringMapStringValueResponse, err error) {
-	resp, err := c.HTTPClient.Get(c.getURL("/read/" + mbean))
+func (c Client) ReadStringMapString(mbean string) (vr *StringMapStringValueResponse, err error) {
+	resp, err := c.httpClient.Get(c.getURL("/read/" + mbean))
 	if err != nil {
 		return nil, err
 	}
@@ -85,8 +90,8 @@ func (c *Client) ReadStringMapString(mbean string) (vr *StringMapStringValueResp
 }
 
 // ReadBool ...
-func (c *Client) ReadBool(mbean string) (vr *BoolValueResponse, err error) {
-	resp, err := c.HTTPClient.Get(c.getURL("/read/" + mbean))
+func (c Client) ReadBool(mbean string) (vr *BoolValueResponse, err error) {
+	resp, err := c.httpClient.Get(c.getURL("/read/" + mbean))
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +106,7 @@ func (c *Client) ReadBool(mbean string) (vr *BoolValueResponse, err error) {
 }
 
 // Exec ...
-func (c *Client) Exec(mbean, operation string, args ...interface{}) (r *Response, err error) {
+func (c Client) Exec(mbean, operation string, args ...interface{}) (r *Response, err error) {
 	request := &Request{
 		Type:      "exec",
 		MBean:     mbean,
@@ -114,7 +119,7 @@ func (c *Client) Exec(mbean, operation string, args ...interface{}) (r *Response
 		return nil, err
 	}
 	buffer := bytes.NewBuffer(jsonBytes)
-	resp, err := c.HTTPClient.Post(c.getURL("/"), "application/json", buffer)
+	resp, err := c.httpClient.Post(c.getURL("/"), "application/json", buffer)
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +135,7 @@ func (c *Client) Exec(mbean, operation string, args ...interface{}) (r *Response
 }
 
 // ExecInto ...
-func (c *Client) ExecInto(response ValueResponse, mbean, operation string, args ...interface{}) error {
+func (c Client) ExecInto(response ValueResponse, mbean, operation string, args ...interface{}) error {
 	request := &Request{
 		Type:      "exec",
 		MBean:     mbean,
@@ -143,7 +148,7 @@ func (c *Client) ExecInto(response ValueResponse, mbean, operation string, args 
 		return err
 	}
 	buffer := bytes.NewBuffer(jsonBytes)
-	resp, err := c.HTTPClient.Post(c.getURL("/"), "application/json", buffer)
+	resp, err := c.httpClient.Post(c.getURL("/"), "application/json", buffer)
 	if err != nil {
 		return err
 	}
@@ -270,8 +275,8 @@ type VersionResponse struct {
 }
 
 // Version ...
-func (c *Client) Version() (versionResp *VersionResponse, err error) {
-	resp, err := c.HTTPClient.Get(c.getURL("/version"))
+func (c Client) Version() (versionResp *VersionResponse, err error) {
+	resp, err := c.httpClient.Get(c.getURL("/version"))
 	if err != nil {
 		return nil, err
 	}

@@ -9,8 +9,8 @@ import (
 
 // Manager handles all interaction with a Cassandra node and cluster
 type Manager struct {
-	jolokiaClient  *jolokia.Client
-	storageService *storageService
+	jolokiaClient  jolokia.Client
+	storageService storageService
 }
 
 // NewManager builds a new Cassandra Manager to encapsulate all interaction with a Cassandra node and Cluster
@@ -19,9 +19,9 @@ func NewManager(jolokiaAddr string) (*Manager, error) {
 	if err != nil {
 		return nil, err
 	}
-	jolokiaClient := &jolokia.Client{HTTPClient: http.DefaultClient, BaseURL: *jolokiaURL}
+	jolokiaClient := jolokia.NewClient(*http.DefaultClient, *jolokiaURL)
 	manager := &Manager{
-		storageService: &storageService{},
+		storageService: storageService{jolokiaClient},
 		jolokiaClient:  jolokiaClient,
 	}
 	return manager, nil
