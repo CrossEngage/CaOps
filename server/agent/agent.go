@@ -32,7 +32,7 @@ func NewAgent(gossipBindAddr, gossipSnapshotPath, jolokiaAddr string) (*Agent, e
 	}, nil
 }
 
-// Start initializes the gossip and check cluster status
+// Start initializes the gossip, check cluster status, and triggers the event loop
 func (ag *Agent) Start() error {
 	if err := ag.cassMngr.CheckClusterStability(); err != nil {
 		return err
@@ -44,14 +44,14 @@ func (ag *Agent) Start() error {
 	if err := ag.interComm.Join(liveNodes); err != nil {
 		return err
 	}
-
 	liveNodesMap := stringListToMapKeys(liveNodes)
 	for _, ip := range ag.interComm.AliveMembers() {
 		if _, ok := liveNodesMap[ip]; !ok {
 			return fmt.Errorf("Cassandra node %s has not joined this Athena cluster", ip)
 		}
 	}
-
+	// TODO watch for cancelation
+	go ag.interComm.EventLoop()
 	return nil
 }
 
