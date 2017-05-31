@@ -1,4 +1,3 @@
-debug                 : true
 api.server.bind_addr  : :8080
 gossip.bind_addr      : 10.127.0.1:7942
 gossip.snapshot_path  : /tmp/athena/gossip

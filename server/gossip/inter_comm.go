@@ -1,24 +1,23 @@
 package gossip
 
 import (
+	"log"
 	"net"
 	"path/filepath"
 
 	"os"
 
 	"github.com/hashicorp/serf/serf"
-	logging "github.com/op/go-logging"
 )
 
 // InterComm handles inter-agent communication
 type InterComm struct {
-	log     *logging.Logger
 	eventCh chan serf.Event
 	serf    *serf.Serf
 }
 
 // NewInterComm constructs a new InterComm object that handles inter-agent communication
-func NewInterComm(log *logging.Logger, bindTo, snapshotPath string) (*InterComm, error) {
+func NewInterComm(bindTo, snapshotPath string) (*InterComm, error) {
 	serfBindAddr, err := net.ResolveTCPAddr("tcp", bindTo)
 	if err != nil {
 		return nil, err
@@ -41,7 +40,6 @@ func NewInterComm(log *logging.Logger, bindTo, snapshotPath string) (*InterComm,
 	}
 
 	interComm := &InterComm{
-		log:     log,
 		eventCh: eventCh,
 		serf:    serfCli,
 	}
@@ -52,10 +50,10 @@ func NewInterComm(log *logging.Logger, bindTo, snapshotPath string) (*InterComm,
 func (ic *InterComm) Join(nodes []string) error {
 	contacted, err := ic.serf.Join(nodes, false)
 	if err != nil {
-		ic.log.Errorf("Contacted %d nodes, but %s", contacted, err)
+		log.Printf("Contacted %d nodes, but %s", contacted, err)
 		return err
 	}
-	ic.log.Debugf("Contacted %d nodes", contacted)
+	log.Printf("Contacted %d nodes", contacted)
 	return nil
 }
 
@@ -68,4 +66,16 @@ func (ic *InterComm) AliveMembers() []string {
 		}
 	}
 	return ips
+}
+
+// EventLoop watches for events and calls the proper triggers
+func (ic *InterComm) EventLoop() {
+	for {
+		select {
+		case ev := <-ic.eventCh:
+			log.Printf("Event Type: %s, Event: %s\n", ev.EventType().String(), ev.String())
+			// case <-ticker.C:
+			// log.Debugf("Num Nodes: %d, Members: %+v\n", serfCli.NumNodes(), serfCli.Members())
+		}
+	}
 }
