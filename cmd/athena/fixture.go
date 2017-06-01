@@ -6,6 +6,9 @@ import (
 	"math/rand"
 	"net"
 
+	pb "gopkg.in/cheggaaa/pb.v1"
+	inf "gopkg.in/inf.v0"
+
 	"time"
 
 	"github.com/gocql/gocql"
@@ -22,12 +25,14 @@ var (
 	}
 	cassandraAddr string
 	keyspaceName  string
+	numProducts   int
 )
 
 func init() {
 	baseCmd.AddCommand(fixtureCmd)
-	versionCmd.Flags().StringVar(&cassandraAddr, "host", "127.0.0.1:9042", "Cassandra CQL host:port")
-	versionCmd.Flags().StringVar(&keyspaceName, "keyspace", "company_xyz", "The keyspace name to create and fill")
+	fixtureCmd.Flags().StringVar(&cassandraAddr, "host", "127.0.0.1:9042", "Cassandra CQL host:port")
+	fixtureCmd.Flags().StringVar(&keyspaceName, "keyspace", "company_xyz", "The keyspace name to create and fill")
+	fixtureCmd.Flags().IntVar(&numProducts, "num-products", 10000, "Number of products to create")
 }
 
 func logFatal(err error) {
@@ -43,7 +48,7 @@ func runFixtureCmd(cmd *cobra.Command, args []string) {
 	logFatal(err)
 	logFatal(createKeyspace(session, keyspaceName))
 	logFatal(createProductsTable(session, keyspaceName))
-	logFatal(fillProductsTable(session, keyspaceName, 10000))
+	logFatal(fillProductsTable(session, keyspaceName, numProducts))
 	defer session.Close()
 }
 
@@ -81,14 +86,12 @@ func createProductsTable(session *gocql.Session, keyspace string) error {
 	log.Printf("Creating products table at %s@%s", keyspaceName, cassandraAddr)
 	query := `
 		CREATE TABLE IF NOT EXISTS %s.products (
-			sku   uuid, 
+			sku   uuid PRIMARY KEY, 
 			brand varchar,
 			name  varchar,
 			model varchar,
 			price decimal,
-			PRIMARY KEY ((sku), brand),
-		) WITH CLUSTERING ORDER BY brand
-		AND comment='Products'`
+		) WITH comment='Products'`
 	if err := session.Query(fmt.Sprintf(query, keyspace)).Exec(); err != nil {
 		return err
 	}
@@ -97,15 +100,19 @@ func createProductsTable(session *gocql.Session, keyspace string) error {
 
 func fillProductsTable(session *gocql.Session, keyspace string, qtd int) error {
 	log.Printf("Filling products table at %s@%s", keyspaceName, cassandraAddr)
+	bar := pb.StartNew(qtd)
 	for i := 0; i < qtd; i++ {
+		bar.Increment()
 		query := `
 			INSERT INTO %s.products (sku, brand, name, model, price)
 			VALUES (?, ?, ?, ?, ?) IF NOT EXISTS`
 		if err := session.Query(fmt.Sprintf(query, keyspace),
-			uuid.NewV4().String(), fake.Brand(), fake.ProductName(), fake.Model(), rand.Float32(),
+			uuid.NewV4().String(), fake.Brand(), fake.ProductName(), fake.Model(),
+			inf.NewDec(rand.Int63()+1, inf.Scale(rand.Int31())),
 		).Exec(); err != nil {
 			return err
 		}
 	}
+	bar.FinishPrint("Done.")
 	return nil
 }
