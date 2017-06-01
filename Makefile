@@ -14,6 +14,11 @@ DEV_CASS_VER  := c22
 default: build
 
 
+.PHONY: ignored
+ignored:
+	git ls-files --others -i --exclude-standard
+
+
 .PHONY: help
 help:
 	@echo "make [target]"
