@@ -55,9 +55,13 @@ func (ag *Agent) Start() error {
 	return nil
 }
 
-// DoSnapshot triggers a snapshot on Cassandra for the given keyspace and table.
-// Both keyspace and table can be wildcards. There is no glob expansion at the moment.
-func (ag *Agent) DoSnapshot(keyspace, table string) error {
+// TODO extract cluster check logic to a method
 
-	return nil
+// DoSnapshot triggers a snapshot on Cassandra for the given keyspace and table.
+// The keyspace parameter supports glob expansion, but the table parameter only suports
+// all (*) or a specific table.
+func (ag *Agent) DoSnapshot(keyspace, table string) error {
+	results := ag.cassMngr.Snapshot(keyspace, table)
+	// TODO instead of snapshotting directly here, add an event handler to listen for snapshot tasks
+	return results
 }
