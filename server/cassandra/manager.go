@@ -1,8 +1,12 @@
 package cassandra
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
+	"time"
+
+	"strings"
 
 	"bitbucket.org/crossengage/athena/jolokia"
 )

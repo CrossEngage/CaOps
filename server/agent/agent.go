@@ -55,10 +55,9 @@ func (ag *Agent) Start() error {
 	return nil
 }
 
-func stringListToMapKeys(list []string) map[string]bool {
-	ret := make(map[string]bool)
-	for _, item := range list {
-		ret[item] = true
-	}
-	return ret
+// DoSnapshot triggers a snapshot on Cassandra for the given keyspace and table.
+// Both keyspace and table can be wildcards. There is no glob expansion at the moment.
+func (ag *Agent) DoSnapshot(keyspace, table string) error {
+
+	return nil
 }

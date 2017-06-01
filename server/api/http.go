@@ -9,6 +9,8 @@ import (
 	"os/signal"
 	"time"
 
+	"bitbucket.org/crossengage/athena/server/agent"
+
 	"github.com/gorilla/mux"
 )
 
@@ -17,10 +19,11 @@ type Server struct {
 	stopChan chan os.Signal
 	server   *http.Server
 	router   *mux.Router
+	agent    *agent.Agent
 }
 
 // NewServer ...
-func NewServer(bindTo string) *Server {
+func NewServer(bindTo string, agent *agent.Agent) *Server {
 	// subscribe to SIGINT signals
 	stopChan := make(chan os.Signal)
 	signal.Notify(stopChan, os.Interrupt)
@@ -29,6 +32,7 @@ func NewServer(bindTo string) *Server {
 		stopChan: stopChan,
 		server:   &http.Server{Addr: bindTo, Handler: router},
 		router:   router,
+		agent:    agent,
 	}
 
 	router.Methods("GET").Path("/snapshot/{keyspace}/{table}").HandlerFunc(server.snapshotHandler)
@@ -53,7 +57,7 @@ func (s *Server) ListenAndServe() error {
 	return s.server.ListenAndServe()
 }
 
-func (s *Server) snapshotHandler(w http.ResponseWriter, r *http.Request) {
+func (s *Server) snapshotKeyspaceTableHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	// TODO
 	// if err := checkClusterStatus(); err != nil {

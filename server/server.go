@@ -19,7 +19,7 @@ func NewAthena(apiServerBindAddr, gossipBindAddr, gossipSnapshotPath, jolokiaAdd
 	if err != nil {
 		return nil, err
 	}
-	apiServer := api.NewServer(apiServerBindAddr)
+	apiServer := api.NewServer(apiServerBindAddr, agent)
 	return &Athena{agent: agent, apiServer: apiServer}, nil
 }
 
