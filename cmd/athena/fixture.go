@@ -26,6 +26,7 @@ var (
 	cassandraAddr string
 	keyspaceName  string
 	numProducts   int
+	numUsers      int
 )
 
 func init() {
@@ -33,6 +34,7 @@ func init() {
 	fixtureCmd.Flags().StringVar(&cassandraAddr, "host", "127.0.0.1:9042", "Cassandra CQL host:port")
 	fixtureCmd.Flags().StringVar(&keyspaceName, "keyspace", "company_xyz", "The keyspace name to create and fill")
 	fixtureCmd.Flags().IntVar(&numProducts, "num-products", 10000, "Number of products to create")
+	fixtureCmd.Flags().IntVar(&numUsers, "num-users", 1000000, "Number of users to create")
 }
 
 func logFatal(err error) {
@@ -49,6 +51,8 @@ func runFixtureCmd(cmd *cobra.Command, args []string) {
 	logFatal(createKeyspace(session, keyspaceName))
 	logFatal(createProductsTable(session, keyspaceName))
 	logFatal(fillProductsTable(session, keyspaceName, numProducts))
+	logFatal(createUsersTable(session, keyspaceName))
+	logFatal(fillUsersTable(session, keyspaceName, numUsers))
 	defer session.Close()
 }
 
@@ -108,8 +112,41 @@ func fillProductsTable(session *gocql.Session, keyspace string, qtd int) error {
 			VALUES (?, ?, ?, ?, ?) IF NOT EXISTS`
 		if err := session.Query(fmt.Sprintf(query, keyspace),
 			uuid.NewV4().String(), fake.Brand(), fake.ProductName(), fake.Model(),
-			inf.NewDec(rand.Int63()+1, inf.Scale(rand.Int31())),
-		).Exec(); err != nil {
+			inf.NewDec(rand.Int63()+1, inf.Scale(rand.Int31()))).Exec(); err != nil {
+			return err
+		}
+	}
+	bar.FinishPrint("Done.")
+	return nil
+}
+
+func createUsersTable(session *gocql.Session, keyspace string) error {
+	log.Printf("Creating users table at %s@%s", keyspaceName, cassandraAddr)
+	query := `
+		CREATE TABLE IF NOT EXISTS %s.users (
+			id        uuid PRIMARY KEY, 
+			username  varchar,
+			email     varchar,
+			full_name varchar,
+			gender    varchar,
+		) WITH comment='Users'`
+	if err := session.Query(fmt.Sprintf(query, keyspace)).Exec(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func fillUsersTable(session *gocql.Session, keyspace string, qtd int) error {
+	log.Printf("Filling users table at %s@%s", keyspaceName, cassandraAddr)
+	bar := pb.StartNew(qtd)
+	for i := 0; i < qtd; i++ {
+		bar.Increment()
+		query := `
+			INSERT INTO %s.users (id, username, email, full_name, gender)
+			VALUES (?, ?, ?, ?, ?) IF NOT EXISTS`
+		if err := session.Query(fmt.Sprintf(query, keyspace),
+			uuid.NewV4().String(), fake.UserName(), fake.EmailAddress(),
+			fake.FullName(), fake.Gender()).Exec(); err != nil {
 			return err
 		}
 	}
