@@ -113,7 +113,7 @@ func (m *Manager) matchKeyspaces(keyspaceGlob string) ([]string, error) {
 
 func (m *Manager) genSnapshotName(keyspaceName, tableName string) string {
 	return fmt.Sprintf(
-		"athena:%s:%s:%s",
+		"CaOps:%s:%s:%s",
 		strings.Replace(keyspaceName, "*", "", -1),
 		strings.Replace(tableName, "*", "", -1),
 		time.Now().Format(time.RFC3339))

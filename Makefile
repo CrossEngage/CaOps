@@ -1,8 +1,8 @@
-APPNAME       := athena
+APPNAME       := CaOps
 VERSION       := $(shell git describe --all --always --dirty --long)
 LDFLAGS       := "-X main.appName=$(APPNAME) -X main.version=$(VERSION)"
 PLATFORMS     := darwin-386 darwin-amd64 linux-386 linux-amd64 linux-arm windows-386 windows-amd64
-INSTALL_PKG   := ./cmd/athena
+INSTALL_PKG   := ./cmd/CaOps
 BIN_DIR       := ./bin
 DIST_DIR      := ./dist
 APP_BIN       := $(BIN_DIR)/$(APPNAME)

@@ -68,21 +68,21 @@ then
 		sed "s/{{RPC_ADDRESS}}/$ADDRESS/g" | \
 		sudo tee /etc/cassandra/cassandra.yaml
 	
-	# Athena
-	sudo mkdir /etc/athena
+	# CaOps
+	sudo mkdir /etc/CaOps
 fi
 
-cat /tmp/athena.yaml | \
+cat /tmp/CaOps.yaml | \
 	sed "s/{{IP}}/$ADDRESS/g" | \
-	sudo tee /etc/athena/athena.yaml
+	sudo tee /etc/CaOps/CaOps.yaml
 
-cat /tmp/athena.service | sudo tee /etc/systemd/system/athena.service
+cat /tmp/CaOps.service | sudo tee /etc/systemd/system/CaOps.service
 sudo systemctl daemon-reload
-systemctl enable athena.service
+systemctl enable CaOps.service
 
-sudo systemctl stop athena.service
-sudo cp /tmp/athena /usr/local/bin/athena
-sudo systemctl start athena.service
+sudo systemctl stop CaOps.service
+sudo cp /tmp/CaOps /usr/local/bin/CaOps
+sudo systemctl start CaOps.service
 
 if [ ! -e $BOOTSTRAPPED_LOCK ]
 then

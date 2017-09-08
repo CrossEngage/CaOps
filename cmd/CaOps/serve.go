@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"bitbucket.org/crossengage/athena/server"
+	"github.com/crossengage/CaOps/server"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -19,7 +19,7 @@ func init() {
 }
 
 func runServeCmd(cmd *cobra.Command, args []string) {
-	athena, err := server.NewAthena(
+	CaOps, err := server.NewCaOps(
 		viper.GetString("api.server.bind_addr"),
 		viper.GetString("gossip.bind_addr"),
 		viper.GetString("gossip.snapshot_path"),
@@ -29,5 +29,5 @@ func runServeCmd(cmd *cobra.Command, args []string) {
 		log.Fatal(err)
 	}
 
-	athena.Run()
+	CaOps.Run()
 }

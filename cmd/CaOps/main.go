@@ -9,7 +9,7 @@ import (
 
 var (
 	// appName and version are fed through the go linker
-	appName = `athena`
+	appName = `CaOps`
 	version = ``
 
 	cfgFile string
@@ -22,7 +22,7 @@ var (
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	baseCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.athena.yaml)")
+	baseCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.CaOps.yaml)")
 }
 
 func main() {
@@ -37,9 +37,9 @@ func initConfig() {
 	if cfgFile != "" {
 		viper.SetConfigFile(cfgFile)
 	} else {
-		viper.SetConfigName("athena")
-		viper.AddConfigPath("/etc/athena")
-		viper.AddConfigPath("$HOME/.athena")
+		viper.SetConfigName("CaOps")
+		viper.AddConfigPath("/etc/CaOps")
+		viper.AddConfigPath("$HOME/.CaOps")
 		viper.AddConfigPath(".")
 	}
 

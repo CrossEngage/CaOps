@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"bitbucket.org/crossengage/athena/jolokia"
+	"github.com/crossengage/CaOps/jolokia"
 )
 
 // Manager handles all interaction with a Cassandra node and cluster

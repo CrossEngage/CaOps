@@ -8,8 +8,7 @@ import (
 	"os/signal"
 	"time"
 
-	"bitbucket.org/crossengage/athena/server/agent"
-
+	"github.com/crossengage/CaOps/server/agent"
 	"github.com/gorilla/mux"
 )
 

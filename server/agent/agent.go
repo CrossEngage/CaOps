@@ -3,8 +3,8 @@ package agent
 import (
 	"fmt"
 
-	"bitbucket.org/crossengage/athena/server/cassandra"
-	"bitbucket.org/crossengage/athena/server/gossip"
+	"github.com/crossengage/CaOps/server/cassandra"
+	"github.com/crossengage/CaOps/server/gossip"
 )
 
 // Agent orchestrates all operations
@@ -14,7 +14,7 @@ type Agent struct {
 }
 
 // NewAgent ...
-func NewAgent(gossipBindAddr, gossipSnapshotPath, jolokiaAddr string) (*Agent, error) {
+func NewAgent(gossipBindAddr, gossipSnapshotPagithub.com/crossengageth, jolokiaAddr string) (*Agent, error) {
 	// Create the Cassandra Manager
 	cassMngr, err := cassandra.NewManager(jolokiaAddr)
 	if err != nil {
@@ -47,7 +47,7 @@ func (ag *Agent) Start() error {
 	liveNodesMap := stringListToMapKeys(liveNodes)
 	for _, ip := range ag.interComm.AliveMembers() {
 		if _, ok := liveNodesMap[ip]; !ok {
-			return fmt.Errorf("Cassandra node %s has not joined this Athena cluster", ip)
+			return fmt.Errorf("Cassandra node %s has not joined this CaOps cluster", ip)
 		}
 	}
 	// TODO watch for cancelation

@@ -1,9 +1,9 @@
 [Unit]
-Description=Athena Cassandra Agent
+Description=CaOps Cassandra Agent
 After=cassandra.service
 
 [Service]
-ExecStart=/usr/local/bin/athena --config /etc/athena/athena.yaml serve
+ExecStart=/usr/local/bin/CaOps --config /etc/CaOps/CaOps.yaml serve
 
 [Install]
 WantedBy=multi-user.target

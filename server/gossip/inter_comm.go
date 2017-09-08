@@ -60,7 +60,7 @@ func (ic *InterComm) Join(nodes []string) error {
 	return nil
 }
 
-// AliveMembers return the IPs of all Athena agents that are alive
+// AliveMembers return the IPs of all CaOps agents that are alive
 func (ic *InterComm) AliveMembers() []string {
 	ips := make([]string, 0)
 	for _, member := range ic.serf.Members() {

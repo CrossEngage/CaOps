@@ -10,7 +10,7 @@ var (
 	complete   = false
 	versionCmd = &cobra.Command{
 		Use:   "version",
-		Short: "Show the version of Athena, Jolokia, and Cassandra",
+		Short: "Show the version of CaOps, Jolokia, and Cassandra",
 		Run:   runVersionCmd,
 	}
 )
