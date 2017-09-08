@@ -6,7 +6,7 @@ import (
 	"io"
 	"log"
 
-	"github.com/crossengage/CaOps/jolokia"
+	"github.com/CrossEngage/CaOps/jolokia"
 )
 
 // storageService is analogous to the original storageService on Cassandra,

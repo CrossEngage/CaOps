@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/crossengage/CaOps/server/agent"
+	"github.com/CrossEngage/CaOps/server/agent"
 	"github.com/gorilla/mux"
 )
 

@@ -3,8 +3,8 @@ package agent
 import (
 	"fmt"
 
-	"github.com/crossengage/CaOps/server/cassandra"
-	"github.com/crossengage/CaOps/server/gossip"
+	"github.com/CrossEngage/CaOps/server/cassandra"
+	"github.com/CrossEngage/CaOps/server/gossip"
 )
 
 // Agent orchestrates all operations
@@ -14,7 +14,7 @@ type Agent struct {
 }
 
 // NewAgent ...
-func NewAgent(gossipBindAddr, gossipSnapshotPagithub.com/crossengageth, jolokiaAddr string) (*Agent, error) {
+func NewAgent(gossipBindAddr, gossipSnapshotPath, jolokiaAddr string) (*Agent, error) {
 	// Create the Cassandra Manager
 	cassMngr, err := cassandra.NewManager(jolokiaAddr)
 	if err != nil {
