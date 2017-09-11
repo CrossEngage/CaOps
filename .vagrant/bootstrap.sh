@@ -11,7 +11,7 @@ CLUSTER_NAME="$2"
 SEEDS="$3"
 ADDRESS="$4"
 
-JOLOKIA_VERSION='1.3.6'
+JOLOKIA_VERSION='1.3.7'
 
 DISTRO_RELEASE=`lsb_release -s -r`
 DISTRO_CODENAME=`lsb_release -s -c`
