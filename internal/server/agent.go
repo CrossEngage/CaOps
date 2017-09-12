@@ -4,13 +4,12 @@ import (
 	"fmt"
 
 	"github.com/CrossEngage/CaOps/internal/cassandra"
-	"github.com/CrossEngage/CaOps/internal/gossip"
 )
 
 // Agent orchestrates all operations
 type Agent struct {
 	cassMngr  *cassandra.Manager
-	interComm *gossip.InterComm
+	interComm *InterComm
 }
 
 // NewAgent ...
@@ -21,7 +20,7 @@ func NewAgent(gossipBindAddr, gossipSnapshotPath, jolokiaAddr string) (*Agent, e
 		return nil, err
 	}
 	// Create the Gossip InterComm
-	interComm, err := gossip.NewInterComm(gossipBindAddr, gossipSnapshotPath)
+	interComm, err := NewInterComm(gossipBindAddr, gossipSnapshotPath)
 	if err != nil {
 		return nil, err
 	}
