@@ -3,8 +3,8 @@ package agent
 import (
 	"fmt"
 
-	"github.com/CrossEngage/CaOps/server/cassandra"
-	"github.com/CrossEngage/CaOps/server/gossip"
+	"github.com/CrossEngage/CaOps/internal/cassandra"
+	"github.com/CrossEngage/CaOps/internal/gossip"
 )
 
 // Agent orchestrates all operations

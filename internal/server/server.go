@@ -3,8 +3,8 @@ package server
 import (
 	"log"
 
-	"github.com/CrossEngage/CaOps/server/agent"
-	"github.com/CrossEngage/CaOps/server/api"
+	"github.com/CrossEngage/CaOps/internal/agent"
+	"github.com/CrossEngage/CaOps/internal/api"
 )
 
 // CaOps encapsulates all the CaOps server behaviour

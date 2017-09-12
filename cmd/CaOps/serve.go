@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/CrossEngage/CaOps/server"
+	"github.com/CrossEngage/CaOps/internal/server"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

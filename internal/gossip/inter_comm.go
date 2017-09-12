@@ -3,9 +3,8 @@ package gossip
 import (
 	"log"
 	"net"
-	"path/filepath"
-
 	"os"
+	"path/filepath"
 
 	"github.com/hashicorp/serf/serf"
 )
