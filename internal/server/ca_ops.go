@@ -1,18 +1,25 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"log"
+	"net/http"
+	"os"
+	"os/signal"
 	"time"
 
 	"github.com/CrossEngage/CaOps/internal/cassandra"
+	"github.com/gorilla/mux"
 )
 
 // CaOps encapsulates all the CaOps server behavior
 type CaOps struct {
-	httpService *HTTPService
-	cassMngr    *cassandra.Manager
-	gossiper    *Gossiper
+	cassMngr *cassandra.Manager
+	gossiper *Gossiper
+	stopChan chan os.Signal
+	server   *http.Server
+	router   *mux.Router
 }
 
 // NewCaOps constructs a new CaOps server
@@ -30,14 +37,36 @@ func NewCaOps(httpBindAddr, gossipBindAddr, gossipSnapshotPath, jolokiaAddr stri
 		return nil, err
 	}
 
-	// Create the HTTP Service
-	httpService := NewHTTPService(httpBindAddr, gossiper)
+	// subscribe to SIGINT signals
+	stopChan := make(chan os.Signal)
+	signal.Notify(stopChan, os.Interrupt)
 
-	return &CaOps{
-		httpService: httpService,
-		cassMngr:    cassMngr,
-		gossiper:    gossiper,
-	}, nil
+	router := mux.NewRouter()
+
+	caops := &CaOps{
+		stopChan: stopChan,
+		server:   &http.Server{Addr: httpBindAddr, Handler: router},
+		router:   router,
+		cassMngr: cassMngr,
+		gossiper: gossiper,
+	}
+
+	router.Methods("GET").
+		Path("/snapshot/{keyspaceGlob}/{table}").
+		HandlerFunc(caops.snapshotHandler)
+
+	return caops, nil
+}
+
+func (caops *CaOps) waitForShutdown() {
+	<-caops.stopChan
+	log.Print("Shutting down HTTP server...")
+	// shut down gracefully, but wait no longer than 5 seconds before halting
+	// TODO make this configurable - maybe increase it for when there are uploads happening
+	ctx, cancelFun := context.WithTimeout(context.Background(), 5*time.Second)
+	cancelFun()
+	caops.server.Shutdown(ctx)
+	log.Print("HTTP Server gracefully stopped")
 }
 
 // Run starts the agent and the HTTP API server, and blocks, until it is finished
@@ -50,7 +79,10 @@ func (caops *CaOps) Run() {
 			break
 		}
 	}
-	if err := caops.httpService.ListenAndServe(); err != nil {
+
+	go caops.waitForShutdown()
+
+	if err := caops.server.ListenAndServe(); err != nil {
 		log.Fatal(err)
 	}
 }
