@@ -1,20 +1,20 @@
 package main
 
+// TODO - move this to integration tests
+
 import (
 	"fmt"
 	"log"
 	"math/rand"
 	"net"
-
-	pb "gopkg.in/cheggaaa/pb.v1"
-	inf "gopkg.in/inf.v0"
-
 	"time"
 
 	"github.com/gocql/gocql"
 	"github.com/icrowley/fake"
 	uuid "github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
+	pb "gopkg.in/cheggaaa/pb.v1"
+	inf "gopkg.in/inf.v0"
 )
 
 var (
@@ -78,7 +78,7 @@ func getCassandraClusterConfig() *gocql.ClusterConfig {
 func createKeyspace(session *gocql.Session, keyspace string) error {
 	log.Printf("Creating keyspace %s at %s", keyspaceName, cassandraAddr)
 	query := `
-		CREATE KEYSPACE IF NOT EXISTS %s WITH REPLICATION = 
+		CREATE KEYSPACE IF NOT EXISTS %s WITH REPLICATION =
 		{'class':'SimpleStrategy','replication_factor':3}`
 	if err := session.Query(fmt.Sprintf(query, keyspace)).Exec(); err != nil {
 		return err
@@ -90,7 +90,7 @@ func createProductsTable(session *gocql.Session, keyspace string) error {
 	log.Printf("Creating products table at %s@%s", keyspaceName, cassandraAddr)
 	query := `
 		CREATE TABLE IF NOT EXISTS %s.products (
-			sku   uuid PRIMARY KEY, 
+			sku   uuid PRIMARY KEY,
 			brand varchar,
 			name  varchar,
 			model varchar,
@@ -124,7 +124,7 @@ func createUsersTable(session *gocql.Session, keyspace string) error {
 	log.Printf("Creating users table at %s@%s", keyspaceName, cassandraAddr)
 	query := `
 		CREATE TABLE IF NOT EXISTS %s.users (
-			id        uuid PRIMARY KEY, 
+			id        uuid PRIMARY KEY,
 			username  varchar,
 			email     varchar,
 			full_name varchar,
