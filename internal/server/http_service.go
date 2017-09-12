@@ -9,7 +9,6 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/CrossEngage/CaOps/internal/agent"
 	"github.com/gorilla/mux"
 )
 
@@ -18,11 +17,11 @@ type HTTPService struct {
 	stopChan chan os.Signal
 	server   *http.Server
 	router   *mux.Router
-	agent    *agent.Agent
+	agent    *Agent
 }
 
 // NewHTTPService ...
-func NewHTTPService(bindTo string, agent *agent.Agent) *HTTPService {
+func NewHTTPService(bindTo string, agent *Agent) *HTTPService {
 	// subscribe to SIGINT signals
 	stopChan := make(chan os.Signal)
 	signal.Notify(stopChan, os.Interrupt)

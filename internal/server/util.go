@@ -1,4 +1,4 @@
-package agent
+package server
 
 func stringListToMapKeys(list []string) map[string]bool {
 	ret := make(map[string]bool)
