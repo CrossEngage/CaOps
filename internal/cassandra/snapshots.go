@@ -112,9 +112,10 @@ func (m *Manager) matchKeyspaces(keyspaceGlob string) ([]string, error) {
 }
 
 func (m *Manager) genSnapshotName(keyspaceName, tableName string) string {
-	return fmt.Sprintf(
-		"CaOps:%s:%s:%s",
-		strings.Replace(keyspaceName, "*", "", -1),
-		strings.Replace(tableName, "*", "", -1),
-		time.Now().Format(time.RFC3339))
+	return fmt.Sprintf("%s-CaOps", time.Now().Format("20060102T150405"))
+}
+
+// ClearSnapshot is similar to nodetool clearsnapshot
+func (m *Manager) ClearSnapshot() error {
+	return m.storageService.ClearSnapshot("")
 }

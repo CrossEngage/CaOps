@@ -239,7 +239,11 @@ func (ss storageService) TakeMultipleTableSnapshot(tag string, tableList ...stri
 func (ss storageService) ClearSnapshot(tag string, keyspaces ...string) error {
 	args := make([]interface{}, 2)
 	args[0] = tag
-	args[1] = keyspaces
+	if keyspaces != nil {
+		args[1] = keyspaces
+	} else {
+		args[1] = []string{}
+	}
 	r, err := ss.jolokiaClient.Exec(storageServicePath, "clearSnapshot", args...)
 	if err != nil {
 		return err

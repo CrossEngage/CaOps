@@ -52,8 +52,11 @@ func NewCaOps(httpBindAddr, gossipBindAddr, gossipSnapshotPath, jolokiaAddr stri
 	}
 
 	router.Methods("GET").
-		Path("/snapshot/{keyspaceGlob}/{table}").
-		HandlerFunc(caops.snapshotHandler)
+		Path("/backup/{keyspaceGlob}/{table}").
+		HandlerFunc(caops.backupHandler)
+	router.Methods("DELETE").
+		Path("/snapshots").
+		HandlerFunc(caops.clearSnapshotHandler)
 
 	return caops, nil
 }
@@ -79,6 +82,9 @@ func (caops *CaOps) Run() {
 			break
 		}
 	}
+
+	caops.gossiper.RegisterEventHandler("backup", caops.backupEventHandler)
+	caops.gossiper.RegisterEventHandler("clearsnapshot", caops.clearSnapshotEventHandler)
 
 	go caops.waitForShutdown()
 

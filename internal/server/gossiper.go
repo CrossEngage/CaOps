@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/hashicorp/serf/serf"
 )
@@ -13,12 +14,16 @@ import (
 // if the event handler processing must break or not, and if necessary, return an error
 type EventHandler func(event serf.UserEvent) (breakLoop bool, err error)
 
-// Gossiper handles cluster communication
+// EventHandlersMap is a map of event IDs to its collection of handlers
+type EventHandlersMap map[string][]EventHandler
+
+// Gossiper handles CaOps cluster-wide communication. It is used to send cluster-wide commands,
 type Gossiper struct {
-	eventCh       chan serf.Event
-	serf          *serf.Serf
-	eventHandlers map[string][]EventHandler
-	shutdownCh    chan struct{}
+	eventCh          chan serf.Event
+	serf             *serf.Serf
+	eventHandlers    EventHandlersMap
+	eventHandlersMtx sync.Mutex
+	shutdownCh       chan struct{}
 }
 
 // NewGossiper constructs a new Gossiper object
@@ -44,9 +49,10 @@ func NewGossiper(bindTo, snapshotPath string) (*Gossiper, error) {
 	}
 
 	gossiper := &Gossiper{
-		eventCh:    eventCh,
-		serf:       serfCli,
-		shutdownCh: make(chan struct{}), // TODO handle shutdowns
+		eventCh:       eventCh,
+		serf:          serfCli,
+		eventHandlers: make(EventHandlersMap),
+		shutdownCh:    make(chan struct{}), // TODO handle shutdowns
 	}
 	return gossiper, nil
 }
@@ -97,12 +103,18 @@ func (g *Gossiper) EventLoop() {
 }
 
 func (g *Gossiper) handleUserEvent(event serf.UserEvent) {
+	g.eventHandlersMtx.Lock() // to avoid data races
+	defer g.eventHandlersMtx.Unlock()
 	if !g.isEventHandlerNameRegistered(event.Name) {
+		log.Printf("Unknown event type '%s'", event.Name)
 		return
 	}
 	total := len(g.eventHandlers[event.Name])
+	if total == 0 {
+		log.Printf("No event handlers for '%s'", event.Name)
+	}
 	for i, handler := range g.eventHandlers[event.Name] {
-		log.Printf("Running handler %d of %d for event '%s'", i, total, event.Name)
+		log.Printf("Running handler %d of %d for event '%s'", i+1, total, event.Name)
 		if stop, err := handler(event); err != nil {
 			log.Printf("Error when running handler %d for event '%s': %s", i, event.String(), err)
 		} else if stop && i < total-1 {
@@ -112,13 +124,10 @@ func (g *Gossiper) handleUserEvent(event serf.UserEvent) {
 	}
 }
 
-func (g *Gossiper) isEventHandlerNameRegistered(name string) bool {
-	_, ok := g.eventHandlers[name]
-	return ok
-}
-
 // RegisterEventHandler adds a new event handler
 func (g *Gossiper) RegisterEventHandler(name string, handler EventHandler) {
+	g.eventHandlersMtx.Lock()
+	defer g.eventHandlersMtx.Unlock()
 	if !g.isEventHandlerNameRegistered(name) {
 		g.eventHandlers[name] = make([]EventHandler, 0)
 	}
@@ -128,4 +137,9 @@ func (g *Gossiper) RegisterEventHandler(name string, handler EventHandler) {
 // SendEvent sends user events
 func (g *Gossiper) SendEvent(name, payload string) error {
 	return g.serf.UserEvent(name, []byte(payload), true)
+}
+
+func (g *Gossiper) isEventHandlerNameRegistered(name string) bool {
+	_, ok := g.eventHandlers[name]
+	return ok
 }

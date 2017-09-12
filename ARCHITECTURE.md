@@ -23,10 +23,7 @@
 
 ## Gossiper
 
-* Sends commands to cluster
-* Receives commands from cluster
-* Call event handlers
-* Accept event handler registration
+Manages cluster communication, and event handlers
 
 ## Scheduler
 
