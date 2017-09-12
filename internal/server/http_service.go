@@ -1,7 +1,8 @@
-package api
+package server
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -12,21 +13,21 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// Server encapsulates all HTTP API
-type Server struct {
+// HTTPService encapsulates all HTTP API
+type HTTPService struct {
 	stopChan chan os.Signal
 	server   *http.Server
 	router   *mux.Router
 	agent    *agent.Agent
 }
 
-// NewServer ...
-func NewServer(bindTo string, agent *agent.Agent) *Server {
+// NewHTTPService ...
+func NewHTTPService(bindTo string, agent *agent.Agent) *HTTPService {
 	// subscribe to SIGINT signals
 	stopChan := make(chan os.Signal)
 	signal.Notify(stopChan, os.Interrupt)
 	router := mux.NewRouter()
-	server := &Server{
+	server := &HTTPService{
 		stopChan: stopChan,
 		server:   &http.Server{Addr: bindTo, Handler: router},
 		router:   router,
@@ -38,7 +39,7 @@ func NewServer(bindTo string, agent *agent.Agent) *Server {
 	return server
 }
 
-func (s *Server) waitForShutdown() {
+func (s *HTTPService) waitForShutdown() {
 	<-s.stopChan
 	log.Print("Shutting down HTTP server...")
 	// shut down gracefully, but wait no longer than 5 seconds before halting
@@ -50,7 +51,22 @@ func (s *Server) waitForShutdown() {
 }
 
 // ListenAndServe ...
-func (s *Server) ListenAndServe() error {
+func (s *HTTPService) ListenAndServe() error {
 	go s.waitForShutdown()
 	return s.server.ListenAndServe()
+}
+
+func (s *HTTPService) snapshotHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	defer r.Body.Close()
+	// TODO trigger a IC snapshot, that will also check the cluster status
+	log.Printf("Snapshot of %s.%s requested", vars["keyspaceGlob"], vars["table"])
+	// TODO serfCli.UserEvent("Snapshot", []byte(payload), true)
+	err := s.agent.DoSnapshot(vars["keyspaceGlob"], vars["table"])
+	if err != nil {
+		w.WriteHeader(http.StatusAccepted)
+	} else {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+	fmt.Fprintf(w, "Snapshot of %s.%s requested", vars["keyspaceGlob"], vars["table"])
 }
