@@ -13,7 +13,7 @@ type Manager struct {
 	storageService storageService
 }
 
-// NewManager builds a new Cassandra Manager to encapsulate all interaction with a Cassandra node and Cluster
+// NewManager builds a new Cassandra Manager to encapsulate all interaction with a Cassandra node
 func NewManager(jolokiaAddr string) (*Manager, error) {
 	jolokiaURL, err := url.Parse(jolokiaAddr)
 	if err != nil {

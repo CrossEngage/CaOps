@@ -3,41 +3,32 @@
 ## CaOps
 
 * Integrates all components
-
-## Local Agent
-
-* Talks to local Cassandra to do operations (snapshotting)
-* Watches for completion
-* Uploads files to remote storage while compressing
-
-## HTTP Service
-
+* Register cluster event handlers
 * Listens for HTTP calls to the API
-* Communicates with Event Dispatcher to send cluster-wide messages
-* Displays distributed state (scheduler)
+* Send cluster-wide events
+* Displays distributed state
 
-## Broadcaster
+## Cassandra Manager
 
-* Sends commands to cluster
-
-## Cluster Listener
-
-* Receives commands from cluster
-* Talks with Local Agent
-
-## Distributed State Machine
-
-* Uses Raft to keep cluster state (scheduled tasks)
-
-## Scheduler
-
-* Triggers events to Local Agent
-* Keeps state on Distributed State Machine
+* Talks to local Cassandra to do operations
+* Watches for completion
 
 ## Cassandra Jolokia Client
 
 * Talks with Cassandra using Jolokia API
 
-## Jolokia Client
+## SnapshotHandler
 
-* Generic Jolokia Client
+* Uploads files to remote storage while compressing
+
+## Gossiper
+
+* Sends commands to cluster
+* Receives commands from cluster
+* Call event handlers
+* Accept event handler registration
+
+## Scheduler
+
+* Triggers events to Local Agent
+* Keeps state on Distributed State Machine
