@@ -29,7 +29,8 @@ func (m *Manager) Snapshot(keyspaceGlob, tableName string) SnapshotResult {
 		if tableName == "*" {
 			results.Set(keyspace, m.storageService.TakeSnapshot(name, keyspace))
 		} else {
-			results.Set(fmt.Sprintf("%s.%s", keyspace, tableName), m.storageService.TakeTableSnapshot(name, keyspace, tableName))
+			results.Set(fmt.Sprintf("%s.%s", keyspace, tableName),
+				m.storageService.TakeTableSnapshot(name, keyspace, tableName))
 		}
 	}
 	return results

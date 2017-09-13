@@ -114,4 +114,6 @@ func (caops *CaOps) statusHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "C* Cluster Moving Nodes:", strings.Join(movingNodes, ", "), getErrStr(err))
 	keyspaces, err := caops.cassMngr.Keyspaces()
 	fmt.Fprintln(w, "C* Keyspaces:", strings.Join(keyspaces, ", "), getErrStr(err))
+	nonSysKeyspaces, err := caops.cassMngr.NonSystemKeyspaces()
+	fmt.Fprintln(w, "C* Non-System Keyspaces:", strings.Join(nonSysKeyspaces, ", "), getErrStr(err))
 }

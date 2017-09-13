@@ -13,6 +13,7 @@ import (
 // Check remote storage connection
 // Flush
 // Check available disk space
+// Get schema and upload to remote storage
 // Trigger snapshotting
 // Check amount of data of snapshots
 // Upload to remote storage
@@ -23,7 +24,8 @@ func (caops *CaOps) backupEventHandler(event serf.UserEvent) (breakLoop bool, er
 	if err != nil {
 		return false, err
 	}
-	log.Printf("Going to do snapshot of %s.%s at %s", bp.KeyspaceGlob, bp.TableGlob, bp.TimeMarker.Format(time.RFC3339))
+	log.Printf("Going to do snapshot of %s.%s at %s", bp.KeyspaceGlob, bp.TableGlob,
+		bp.TimeMarker.Format(time.RFC3339))
 	<-time.After(bp.TimeMarker.Sub(time.Now()))
 	result := caops.cassMngr.Snapshot(bp.KeyspaceGlob, bp.TableGlob)
 	log.Println(result.String())
