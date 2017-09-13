@@ -101,12 +101,14 @@ func (m *Manager) matchKeyspaces(keyspaceGlob string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	keyspaces := make([]string, 0, len(nonSysKeyspaces))
 	for _, keyspace := range nonSysKeyspaces {
 		if kg.Match(keyspace) {
 			keyspaces = append(keyspaces, keyspace)
 		}
 	}
+
 	log.Printf("Keyspace glob matching of %s found: %#v", keyspaceGlob, keyspaces)
 	return keyspaces, nil
 }
