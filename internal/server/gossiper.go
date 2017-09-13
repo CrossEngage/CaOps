@@ -135,11 +135,16 @@ func (g *Gossiper) RegisterEventHandler(name string, handler EventHandler) {
 }
 
 // SendEvent sends user events
-func (g *Gossiper) SendEvent(name, payload string) error {
-	return g.serf.UserEvent(name, []byte(payload), true)
+func (g *Gossiper) SendEvent(name string, payload EventPayload) error {
+	return g.serf.UserEvent(name, payload.Encode(), true)
 }
 
 func (g *Gossiper) isEventHandlerNameRegistered(name string) bool {
 	_, ok := g.eventHandlers[name]
 	return ok
+}
+
+// EventPayload ...
+type EventPayload interface {
+	Encode() []byte
 }

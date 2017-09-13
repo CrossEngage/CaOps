@@ -52,6 +52,9 @@ func NewCaOps(httpBindAddr, gossipBindAddr, gossipSnapshotPath, jolokiaAddr stri
 	}
 
 	router.Methods("GET").
+		Path("/status").
+		HandlerFunc(caops.statusHandler)
+	router.Methods("GET").
 		Path("/backup/{keyspaceGlob}/{table}").
 		HandlerFunc(caops.backupHandler)
 	router.Methods("DELETE").
@@ -74,7 +77,7 @@ func (caops *CaOps) waitForShutdown() {
 
 // Run starts the agent and the HTTP API server, and blocks, until it is finished
 func (caops *CaOps) Run() {
-	for {
+	for { // TODO add a timeout here
 		if err := caops.Init(); err != nil {
 			log.Println(err)
 			time.Sleep(1 * time.Second)
