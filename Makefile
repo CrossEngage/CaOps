@@ -61,3 +61,25 @@ dev_vms: build
 
 provision: build
 	for i in `seq 1 3`; do vagrant up $(DEV_CASS_VER)x0$$i --provision; done
+
+	
+docker:
+	sudo docker build -t caops .
+
+
+docker_run:
+	sudo docker run --name caops01 -d -p 19042:9042 -p 18080:8080 -p 18787:8787 caops:latest
+	export SEED_IP=`sudo docker inspect --format='{{ .NetworkSettings.IPAddress }}' caops01` ; \
+	sudo docker run --name caops02 -d -e CASSANDRA_SEEDS="$$SEED_IP" -p 29042:9042 -p 28080:8080 -p 28787:8787 caops:latest ; \
+	sudo docker run --name caops03 -d -e CASSANDRA_SEEDS="$$SEED_IP" -p 39042:9042 -p 38080:8080 -p 38787:8787 caops:latest
+
+
+docker_stop:
+	sudo docker ps | grep caops | awk '{print$$1}' | paste -s | xargs sudo docker stop
+
+docker_prune:
+	sudo docker rmi caops -f
+	sudo docker container prune -f
+
+docker_shell:
+	sudo docker exec -it `sudo docker ps | grep caops01 | awk '{print$$1}'` /bin/bash
