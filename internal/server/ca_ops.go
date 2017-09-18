@@ -55,7 +55,10 @@ func NewCaOps(httpBindAddr, gossipBindAddr, gossipSnapshotPath, jolokiaAddr stri
 		Path("/status").
 		HandlerFunc(caops.statusHandler)
 	router.Methods("GET").
-		Path("/backup/{keyspaceGlob}/{table}").
+		Path("/backup-keyspaces/{keyspaceGlob}").
+		HandlerFunc(caops.backupHandler)
+	router.Methods("GET").
+		Path("/backup-tables/{keyspaceGlob}/{table}").
 		HandlerFunc(caops.backupHandler)
 	router.Methods("DELETE").
 		Path("/snapshots").

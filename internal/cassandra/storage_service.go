@@ -393,6 +393,7 @@ func (ss storageService) Keyspaces() ([]string, error) {
 }
 
 // NonSystemKeyspaces ...
+// BUG - Cassandra 2.2.x does not seems to differ system keyspaces
 func (ss storageService) NonSystemKeyspaces() ([]string, error) {
 	resp, err := ss.jolokiaClient.ReadStringList(storageServicePath + "/NonSystemKeyspaces")
 	if err != nil {

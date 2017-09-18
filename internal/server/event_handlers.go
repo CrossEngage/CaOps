@@ -22,13 +22,35 @@ import (
 func (caops *CaOps) backupEventHandler(event serf.UserEvent) (breakLoop bool, err error) {
 	bp, err := NewBackupPayload(event.Payload)
 	if err != nil {
+		log.Println(err)
 		return false, err
 	}
-	log.Printf("Going to do snapshot of %s.%s at %s", bp.KeyspaceGlob, bp.TableGlob,
-		bp.TimeMarker.Format(time.RFC3339))
+	log.Printf("Going to do snapshot of %s.%s at %s", bp.KeyspaceGlob, bp.Table, bp.TimeMarker.Format(time.RFC3339))
+
+	keyspaces, err := caops.cassMngr.MatchKeyspaces(bp.KeyspaceGlob)
+	if err != nil {
+		log.Println(err)
+		return false, err
+	}
+
 	<-time.After(bp.TimeMarker.Sub(time.Now()))
-	result := caops.cassMngr.Snapshot(bp.KeyspaceGlob, bp.TableGlob)
-	log.Println(result.String())
+
+	if bp.Table == "" || bp.Table == "*" {
+		tag, err := caops.cassMngr.SnapshotKeyspaces(keyspaces)
+		if err != nil {
+			log.Println(err)
+		}
+		log.Printf("Snapshot of keyspaces (%#v) is done and tagged as %s ", keyspaces, tag)
+	} else {
+		for _, keyspace := range keyspaces {
+			tag, err := caops.cassMngr.SnapshotTable(keyspace, bp.Table)
+			if err != nil {
+				log.Println(err)
+			}
+			log.Printf("Snapshot of %s.%s is done and tagged as %s ", keyspace, bp.Table, tag)
+		}
+	}
+
 	return false, nil
 }
 

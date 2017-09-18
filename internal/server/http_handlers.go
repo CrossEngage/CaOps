@@ -13,7 +13,7 @@ import (
 // BackupPayload ...
 type BackupPayload struct {
 	KeyspaceGlob string
-	TableGlob    string
+	Table        string
 	TimeMarker   time.Time
 }
 
@@ -22,7 +22,7 @@ func NewBackupPayload(payload []byte) (*BackupPayload, error) {
 	parts := strings.Split(string(payload), "\x1F")
 	p := &BackupPayload{}
 	p.KeyspaceGlob = parts[0]
-	p.TableGlob = parts[1]
+	p.Table = parts[1]
 	timeMarker, err := time.Parse(time.RFC3339, parts[2])
 	if err != nil {
 		return nil, err
@@ -33,7 +33,7 @@ func NewBackupPayload(payload []byte) (*BackupPayload, error) {
 
 // Encode ...
 func (p *BackupPayload) Encode() []byte {
-	str := strings.Join([]string{p.KeyspaceGlob, p.TableGlob, p.TimeMarker.Format(time.RFC3339)}, "\x1F")
+	str := strings.Join([]string{p.KeyspaceGlob, p.Table, p.TimeMarker.Format(time.RFC3339)}, "\x1F")
 	return []byte(str)
 }
 
@@ -41,20 +41,31 @@ func (caops *CaOps) backupHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	defer r.Body.Close()
 
-	// TODO make this time configurable or based on some existing metric (some soft of cluster thrift)
-	timeMarker := getNextRoundedTimeWithin(time.Now(), 15*time.Second)
-	log.Printf("Backup of %s.%s requested for %s", vars["keyspaceGlob"], vars["table"], timeMarker.Format(time.RFC3339))
-
-	payload := &BackupPayload{KeyspaceGlob: vars["keyspaceGlob"], TableGlob: vars["table"], TimeMarker: timeMarker}
-
-	err := caops.gossiper.SendEvent("backup", payload)
-	if err != nil {
-		w.WriteHeader(http.StatusAccepted)
-	} else {
-		w.WriteHeader(http.StatusInternalServerError)
+	keyspaceGlob, table := "*", "*"
+	if val, ok := vars["keyspaceGlob"]; ok {
+		keyspaceGlob = val
+	}
+	if val, ok := vars["table"]; ok {
+		table = val
 	}
 
-	fmt.Fprintf(w, "Snapshot of %s.%s at %s was requested", vars["keyspaceGlob"], vars["table"], timeMarker.Format(time.RFC3339))
+	timeMarker, err := caops.backup(keyspaceGlob, table)
+	if err != nil {
+		w.WriteHeader(http.StatusAccepted)
+		fmt.Fprintf(w, "Snapshot of %s.%s at %s was requested", keyspaceGlob, table, timeMarker.Format(time.RFC3339))
+	} else {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "Error while triggering snapshot: %s", err)
+	}
+}
+
+func (caops *CaOps) backup(keyspaceGlob, table string) (timeMarker time.Time, err error) {
+	// TODO make this time configurable or based on some existing metric (some soft of cluster thrift)
+	timeMarker = getNextRoundedTimeWithin(time.Now(), 15*time.Second)
+	log.Printf("Backup of %s.%s requested for %s", keyspaceGlob, table, timeMarker.Format(time.RFC3339))
+	payload := &BackupPayload{KeyspaceGlob: keyspaceGlob, Table: table, TimeMarker: timeMarker}
+	err = caops.gossiper.SendEvent("backup", payload)
+	return
 }
 
 // EmptyPayload ...
