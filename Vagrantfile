@@ -7,31 +7,25 @@ system('.vagrant/ssh.agent.sh')
 
 templates = {
   'cassandra22x' => {
-    dist: 'ubuntu/xenial64', mem: 1024, cpus: 1,
+    dist: 'ubuntu/xenial64', mem: 1512, cpus: 1,
     copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra22x.yaml', '.vagrant/CaOps.yaml', './bin/CaOps', '.vagrant/CaOps.service' ],
-    exec: {
-      '.vagrant/bootstrap.sh': [ '22x', 'C22xCluster', '10.127.22.10,10.127.22.11,10.127.22.12' ]
-    },
+    exec: { '.vagrant/bootstrap.sh': [ '22x', 'C22xCluster', '10.127.22.10,10.127.22.11,10.127.22.12' ] },
   },
   'cassandra30x' => {
-    dist: 'ubuntu/xenial64', mem: 1024, cpus: 1,
+    dist: 'ubuntu/xenial64', mem: 1512, cpus: 1,
     copy: [ '.vagrant/default-cassandra', '.vagrant/cassandra30x.yaml', '.vagrant/CaOps.yaml', './bin/CaOps', '.vagrant/CaOps.service' ],
-    exec: {
-      '.vagrant/bootstrap.sh': [ '30x', 'C22xCluster', '10.127.30.10,10.127.30.11,10.127.30.12' ]
-    },
+    exec: { '.vagrant/bootstrap.sh': [ '30x', 'C22xCluster', '10.127.30.10,10.127.30.11,10.127.30.12' ] },
   }
 }
 
 netmask = '255.255.0.0'
 
 boxes =  {
-  'c22x01' => { template: 'cassandra22x', ip: '10.127.22.10' },
-  'c22x02' => { template: 'cassandra22x', ip: '10.127.22.11' },
-  'c22x03' => { template: 'cassandra22x', ip: '10.127.22.12' },
+  'c22x01' => { template: 'cassandra22x', ip: '10.127.22.11' },
+  'c22x02' => { template: 'cassandra22x', ip: '10.127.22.12' },
 
-  'c30x01' => { template: 'cassandra30x', ip: '10.127.30.10' },
-  'c30x02' => { template: 'cassandra30x', ip: '10.127.30.11' },
-  'c30x03' => { template: 'cassandra30x', ip: '10.127.30.12' },
+  'c30x01' => { template: 'cassandra30x', ip: '10.127.30.11' },
+  'c30x02' => { template: 'cassandra30x', ip: '10.127.30.12' },
 }
 
 
