@@ -59,6 +59,7 @@ func NewGossiper(bindTo, snapshotPath string) (*Gossiper, error) {
 
 // Join the cluster formed by nodes
 func (g *Gossiper) Join(nodes []string) error {
+	log.Println("Joining gossiper to nodes: ", nodes)
 	contacted, err := g.serf.Join(nodes, false)
 	if err != nil {
 		log.Printf("Contacted %d nodes, but %s", contacted, err)

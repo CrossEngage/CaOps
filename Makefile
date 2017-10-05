@@ -56,8 +56,8 @@ $(PLATFORMS):
 
 
 dev_vms: build
-	for i in `seq 1 3`; do vagrant up $(DEV_CASS_VER)x0$$i; done
+	for i in `seq 1 2`; do vagrant up $(DEV_CASS_VER)x0$$i; done
 
 
 provision: build
-	for i in `seq 1 3`; do vagrant up $(DEV_CASS_VER)x0$$i --provision; done
+	for i in `seq 1 2`; do vagrant up --provision $(DEV_CASS_VER)x0$$i; done
