@@ -16,4 +16,5 @@ func init() {
 	} else {
 		logrus.AddHook(hook)
 	}
+	logrus.SetFormatter(&logrus.TextFormatter{DisableColors: true, DisableTimestamp: true})
 }
