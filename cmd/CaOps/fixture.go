@@ -53,6 +53,7 @@ func runFixtureCmd(cmd *cobra.Command, args []string) {
 	logrus.Infof("Connecting to %s", cassandraAddr)
 	logFatal(err)
 	logFatal(createKeyspace(session, keyspaceName))
+	logFatal(createCountersTable(session, keyspaceName))
 	logFatal(createProductsTable(session, keyspaceName))
 	logFatal(fillProductsTable(session, keyspaceName, numProducts))
 	logFatal(createUsersTable(session, keyspaceName))
