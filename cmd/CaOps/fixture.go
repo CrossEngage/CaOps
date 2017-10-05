@@ -37,8 +37,8 @@ func init() {
 	fixtureCmd.Flags().StringVar(&cassandraUser, "user", "cassandra", "Cassandra Username")
 	fixtureCmd.Flags().StringVar(&cassandraPass, "pass", "cassandra", "Cassandra Password")
 	fixtureCmd.Flags().StringVar(&keyspaceName, "keyspace", "company_xyz", "The keyspace name to create and fill")
-	fixtureCmd.Flags().IntVar(&numProducts, "num-products", 10000, "Number of products to create")
-	fixtureCmd.Flags().IntVar(&numUsers, "num-users", 1000000, "Number of users to create")
+	fixtureCmd.Flags().IntVar(&numProducts, "num-products", 100, "Number of products to create")
+	fixtureCmd.Flags().IntVar(&numUsers, "num-users", 10000, "Number of users to create")
 }
 
 func logFatal(err error) {
@@ -94,7 +94,7 @@ func createCountersTable(session *gocql.Session, keyspace string) error {
 	logrus.Infof("Creating counters table at %s@%s", keyspaceName, cassandraAddr)
 	query := `
 		CREATE TABLE IF NOT EXISTS %s.counters (
-			id    string PRIMARY KEY,
+			id    varchar PRIMARY KEY,
 			count counter
 		) WITH comment='Counters'`
 	if err := session.Query(fmt.Sprintf(query, keyspace)).Exec(); err != nil {
