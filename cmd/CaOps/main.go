@@ -1,8 +1,7 @@
 package main
 
 import (
-	"log"
-
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -27,7 +26,7 @@ func init() {
 
 func main() {
 	if err := baseCmd.Execute(); err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
 }
 
@@ -47,8 +46,8 @@ func initConfig() {
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err == nil {
-		log.Print("Loaded config file:", viper.ConfigFileUsed())
+		logrus.Info("Loaded config file:", viper.ConfigFileUsed())
 	} else {
-		log.Print("Could not load configuration:", err)
+		logrus.Error("Could not load configuration:", err)
 	}
 }

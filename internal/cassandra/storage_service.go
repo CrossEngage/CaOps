@@ -4,7 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
-	"log"
+
+	"github.com/Sirupsen/logrus"
 
 	"github.com/CrossEngage/CaOps/internal/jolokia"
 )
@@ -202,7 +203,7 @@ func (ss storageService) TakeSnapshot(tag string, keyspaces ...string) error {
 	if err != nil {
 		return err
 	}
-	log.Println(r)
+	logrus.Debug(r)
 	return nil
 }
 
@@ -216,7 +217,7 @@ func (ss storageService) TakeTableSnapshot(tag, keyspace, table string) error {
 	if err != nil {
 		return err
 	}
-	log.Println(r)
+	logrus.Debug(r)
 	return nil
 }
 
@@ -230,7 +231,7 @@ func (ss storageService) TakeMultipleTableSnapshot(tag string, tableList ...stri
 	if err != nil {
 		return err
 	}
-	log.Println(r)
+	logrus.Debug(r)
 	return nil
 }
 
@@ -248,7 +249,7 @@ func (ss storageService) ClearSnapshot(tag string, keyspaces ...string) error {
 	if err != nil {
 		return err
 	}
-	log.Println(r)
+	logrus.Debug(r)
 	return nil
 }
 
@@ -323,7 +324,7 @@ func (ss storageService) AllSnapshotsSize() (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
-	log.Printf("\n%+v\n\n", response)
+	logrus.Debugf("\n%+v\n\n", response)
 	return response.Value, nil
 }
 
@@ -334,7 +335,7 @@ func (ss storageService) refreshSizeEstimates() error {
 	if err != nil {
 		return err
 	}
-	log.Println(r)
+	logrus.Debug(r)
 	return nil
 }
 
@@ -354,7 +355,7 @@ func (ss storageService) ForceKeyspaceFlush(keyspace string, tables ...string) e
 	if err != nil {
 		return err
 	}
-	log.Println(r)
+	logrus.Debug(r)
 	return nil
 }
 

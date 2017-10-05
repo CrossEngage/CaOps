@@ -1,9 +1,9 @@
 package server
 
 import (
-	"log"
 	"time"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/hashicorp/serf/serf"
 )
 
@@ -22,32 +22,34 @@ import (
 func (caops *CaOps) backupEventHandler(event serf.UserEvent) (breakLoop bool, err error) {
 	bp, err := NewBackupPayload(event.Payload)
 	if err != nil {
-		log.Println(err)
+		logrus.Error(err)
 		return false, err
 	}
-	log.Printf("Going to do snapshot of %s.%s at %s", bp.KeyspaceGlob, bp.Table, bp.TimeMarker.Format(time.RFC3339))
+	logrus.Infof("Going to do snapshot of %s.%s at %s", bp.KeyspaceGlob, bp.Table, bp.TimeMarker.Format(time.RFC3339))
 
 	keyspaces, err := caops.cassMngr.MatchKeyspaces(bp.KeyspaceGlob)
 	if err != nil {
-		log.Println(err)
+		logrus.Error(err)
 		return false, err
 	}
 
 	<-time.After(bp.TimeMarker.Sub(time.Now()))
 
 	if bp.Table == "" || bp.Table == "*" {
-		tag, err := caops.cassMngr.SnapshotKeyspaces(keyspaces)
+		_, tag, err := caops.cassMngr.SnapshotKeyspaces(keyspaces)
 		if err != nil {
-			log.Println(err)
+			logrus.Error(err)
+			return false, err
 		}
-		log.Printf("Snapshot of keyspaces (%#v) is done and tagged as %s ", keyspaces, tag)
+		logrus.Infof("Snapshot of keyspaces (%#v) is done and tagged as %s ", keyspaces, tag)
 	} else {
 		for _, keyspace := range keyspaces {
 			tag, err := caops.cassMngr.SnapshotTable(keyspace, bp.Table)
 			if err != nil {
-				log.Println(err)
+				logrus.Error(err)
+				return false, err
 			}
-			log.Printf("Snapshot of %s.%s is done and tagged as %s ", keyspace, bp.Table, tag)
+			logrus.Infof("Snapshot of %s.%s is done and tagged as %s ", keyspace, bp.Table, tag)
 		}
 	}
 
@@ -55,9 +57,10 @@ func (caops *CaOps) backupEventHandler(event serf.UserEvent) (breakLoop bool, er
 }
 
 func (caops *CaOps) clearSnapshotEventHandler(event serf.UserEvent) (breakLoop bool, err error) {
-	log.Println("Clearing snapshots...")
+	logrus.Info("Clearing snapshots...")
 	if err := caops.cassMngr.ClearSnapshot(); err != nil {
-		log.Println(err)
+		logrus.Error(err)
+		return false, err
 	}
 	return false, nil
 }

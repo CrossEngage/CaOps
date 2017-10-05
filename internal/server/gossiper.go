@@ -1,12 +1,12 @@
 package server
 
 import (
-	"log"
 	"net"
 	"os"
 	"path/filepath"
 	"sync"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/hashicorp/serf/serf"
 )
 
@@ -59,13 +59,13 @@ func NewGossiper(bindTo, snapshotPath string) (*Gossiper, error) {
 
 // Join the cluster formed by nodes
 func (g *Gossiper) Join(nodes []string) error {
-	log.Println("Joining gossiper to nodes: ", nodes)
+	logrus.Debug("Joining gossiper to nodes: ", nodes)
 	contacted, err := g.serf.Join(nodes, false)
 	if err != nil {
-		log.Printf("Contacted %d nodes, but %s", contacted, err)
+		logrus.Errorf("Contacted %d nodes, but %s", contacted, err)
 		return err
 	}
-	log.Printf("Contacted %d nodes", contacted)
+	logrus.Infof("Contacted %d nodes", contacted)
 	return nil
 }
 
@@ -88,14 +88,14 @@ func (g *Gossiper) EventLoop() {
 		case e := <-g.eventCh:
 			switch ev := e.(type) {
 			case serf.MemberEvent:
-				log.Println("[84] Event member", ev.EventType())
+				logrus.Debug("[84] Event member", ev.EventType())
 			case *serf.Query:
-				log.Println("[86] Event query", ev.EventType())
+				logrus.Debug("[86] Event query", ev.EventType())
 			case serf.UserEvent:
-				log.Println("[88] Event user", ev.String())
+				logrus.Debug("[88] Event user", ev.String())
 				g.handleUserEvent(ev)
 			default:
-				log.Printf("[91] Unknown event: %#v", e)
+				logrus.Debugf("[91] Unknown event: %#v", e)
 			}
 		case <-g.shutdownCh:
 			return
@@ -107,19 +107,19 @@ func (g *Gossiper) handleUserEvent(event serf.UserEvent) {
 	g.eventHandlersMtx.Lock() // to avoid data races
 	defer g.eventHandlersMtx.Unlock()
 	if !g.isEventHandlerNameRegistered(event.Name) {
-		log.Printf("Unknown event type '%s'", event.Name)
+		logrus.Errorf("Unknown event type '%s'", event.Name)
 		return
 	}
 	total := len(g.eventHandlers[event.Name])
 	if total == 0 {
-		log.Printf("No event handlers for '%s'", event.Name)
+		logrus.Warnf("No event handlers for '%s'", event.Name)
 	}
 	for i, handler := range g.eventHandlers[event.Name] {
-		log.Printf("Running handler %d of %d for event '%s'", i+1, total, event.Name)
+		logrus.Debugf("Running handler %d of %d for event '%s'", i+1, total, event.Name)
 		if stop, err := handler(event); err != nil {
-			log.Printf("Error when running handler %d for event '%s': %s", i, event.String(), err)
+			logrus.Errorf("Error when running handler %d for event '%s': %s", i, event.String(), err)
 		} else if stop && i < total-1 {
-			log.Printf("'%s' event handler %d broke the handler loop, before %d handlers", event.Name, i, total-i-1)
+			logrus.Warnf("'%s' event handler %d broke the handler loop, before %d handlers", event.Name, i, total-i-1)
 			break
 		}
 	}

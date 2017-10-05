@@ -3,13 +3,13 @@ package server
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
 	"github.com/CrossEngage/CaOps/internal/cassandra"
+	"github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
 )
 
@@ -69,20 +69,20 @@ func NewCaOps(httpBindAddr, gossipBindAddr, gossipSnapshotPath, jolokiaAddr stri
 
 func (caops *CaOps) waitForShutdown() {
 	<-caops.stopChan
-	log.Print("Shutting down HTTP server...")
+	logrus.Info("Shutting down HTTP server...")
 	// shut down gracefully, but wait no longer than 5 seconds before halting
 	// TODO make this configurable - maybe increase it for when there are uploads happening
 	ctx, cancelFun := context.WithTimeout(context.Background(), 5*time.Second)
 	cancelFun()
 	caops.server.Shutdown(ctx)
-	log.Print("HTTP Server gracefully stopped")
+	logrus.Info("HTTP Server gracefully stopped")
 }
 
 // Run starts the agent and the HTTP API server, and blocks, until it is finished
 func (caops *CaOps) Run() {
 	for { // TODO add a timeout here
 		if err := caops.Init(); err != nil {
-			log.Println(err)
+			logrus.Error(err)
 			time.Sleep(1 * time.Second)
 		} else {
 			break
@@ -95,7 +95,7 @@ func (caops *CaOps) Run() {
 	go caops.waitForShutdown()
 
 	if err := caops.server.ListenAndServe(); err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
 }
 

@@ -2,11 +2,11 @@ package server
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 	"time"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
 )
 
@@ -62,7 +62,7 @@ func (caops *CaOps) backupHandler(w http.ResponseWriter, r *http.Request) {
 func (caops *CaOps) backup(keyspaceGlob, table string) (timeMarker time.Time, err error) {
 	// TODO make this time configurable or based on some existing metric (some soft of cluster thrift)
 	timeMarker = getNextRoundedTimeWithin(time.Now(), 15*time.Second)
-	log.Printf("Backup of %s.%s requested for %s", keyspaceGlob, table, timeMarker.Format(time.RFC3339))
+	logrus.Infof("Backup of %s.%s requested for %s", keyspaceGlob, table, timeMarker.Format(time.RFC3339))
 	payload := &BackupPayload{KeyspaceGlob: keyspaceGlob, Table: table, TimeMarker: timeMarker}
 	err = caops.gossiper.SendEvent("backup", payload)
 	return

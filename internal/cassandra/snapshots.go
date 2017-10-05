@@ -4,13 +4,34 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/gobwas/glob"
 )
 
 // SnapshotKeyspaces triggers a snapshot for the given list of keyspaces, and returns a generated tag
-func (m *Manager) SnapshotKeyspaces(keyspaces []string) (tag string, err error) {
+func (m *Manager) SnapshotKeyspaces(keyspaces []string) (snapshotPaths []string, tag string, err error) {
 	tag = m.genSnapshotName()
-	return tag, m.storageService.TakeSnapshot(tag, keyspaces...)
+	if err = m.storageService.TakeSnapshot(tag, keyspaces...); err != nil {
+		return
+	}
+
+	dataDirs, err := m.AllDataFileLocations()
+	if err != nil {
+		return
+	}
+	logrus.Debug(dataDirs)
+
+	details, err := m.storageService.SnapshotDetails()
+	if err != nil {
+		return
+	}
+
+	logrus.Debug(details)
+
+	for _, keyspace := range keyspaces {
+		logrus.Debug(keyspace)
+	}
+	return
 }
 
 // SnapshotTable triggers a snapshot for the specified keyspace and table, and returns a generated tag

@@ -1,9 +1,8 @@
 package main
 
 import (
-	"log"
-
 	"github.com/CrossEngage/CaOps/internal/server"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -26,7 +25,7 @@ func runServeCmd(cmd *cobra.Command, args []string) {
 		viper.GetString("cassandra.jolokia_url"),
 	)
 	if err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
 
 	CaOps.Run()
