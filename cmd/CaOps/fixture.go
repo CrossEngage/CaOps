@@ -24,6 +24,8 @@ var (
 		Run:   runFixtureCmd,
 	}
 	cassandraAddr string
+	cassandraUser string
+	cassandraPass string
 	keyspaceName  string
 	numProducts   int
 	numUsers      int
@@ -32,6 +34,8 @@ var (
 func init() {
 	baseCmd.AddCommand(fixtureCmd)
 	fixtureCmd.Flags().StringVar(&cassandraAddr, "host", "127.0.0.1:9042", "Cassandra CQL host:port")
+	fixtureCmd.Flags().StringVar(&cassandraUser, "user", "cassandra", "Cassandra Username")
+	fixtureCmd.Flags().StringVar(&cassandraPass, "pass", "cassandra", "Cassandra Password")
 	fixtureCmd.Flags().StringVar(&keyspaceName, "keyspace", "company_xyz", "The keyspace name to create and fill")
 	fixtureCmd.Flags().IntVar(&numProducts, "num-products", 10000, "Number of products to create")
 	fixtureCmd.Flags().IntVar(&numUsers, "num-users", 1000000, "Number of users to create")
@@ -61,6 +65,7 @@ func getCassandraClusterConfig() *gocql.ClusterConfig {
 	logFatal(err)
 	config := gocql.NewCluster(cqlAddr.IP.String())
 	config.Port = cqlAddr.Port
+	config.Authenticator = &gocql.PasswordAuthenticator{Username: cassandraUser, Password: cassandraPass}
 	config.ProtoVersion = 4
 	config.Consistency = gocql.Quorum
 	config.Timeout = 5 * time.Minute
@@ -78,6 +83,19 @@ func createKeyspace(session *gocql.Session, keyspace string) error {
 	query := `
 		CREATE KEYSPACE IF NOT EXISTS %s WITH REPLICATION =
 		{'class':'SimpleStrategy','replication_factor':3}`
+	if err := session.Query(fmt.Sprintf(query, keyspace)).Exec(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func createCountersTable(session *gocql.Session, keyspace string) error {
+	logrus.Infof("Creating counters table at %s@%s", keyspaceName, cassandraAddr)
+	query := `
+		CREATE TABLE IF NOT EXISTS %s.counters (
+			id    string PRIMARY KEY,
+			count counter
+		) WITH comment='Counters'`
 	if err := session.Query(fmt.Sprintf(query, keyspace)).Exec(); err != nil {
 		return err
 	}
@@ -111,6 +129,9 @@ func fillProductsTable(session *gocql.Session, keyspace string, qtd int) error {
 		if err := session.Query(fmt.Sprintf(query, keyspace),
 			uuid.NewV4().String(), fake.Brand(), fake.ProductName(), fake.Model(),
 			inf.NewDec(rand.Int63()+1, inf.Scale(rand.Int31()))).Exec(); err != nil {
+			return err
+		}
+		if err := incrementCounter(session, keyspace, "Products"); err != nil {
 			return err
 		}
 	}
@@ -147,7 +168,18 @@ func fillUsersTable(session *gocql.Session, keyspace string, qtd int) error {
 			fake.FullName(), fake.Gender()).Exec(); err != nil {
 			return err
 		}
+		if err := incrementCounter(session, keyspace, "Users"); err != nil {
+			return err
+		}
 	}
 	bar.FinishPrint("Done.")
+	return nil
+}
+
+func incrementCounter(session *gocql.Session, keyspace, counter string) error {
+	query := `UPDATE %s.counters SET count = count + 1 WHERE id = ?`
+	if err := session.Query(fmt.Sprintf(query, keyspace), counter).Exec(); err != nil {
+		return err
+	}
 	return nil
 }

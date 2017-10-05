@@ -43,6 +43,8 @@ func NewGossiper(bindTo, snapshotPath string) (*Gossiper, error) {
 	config.MemberlistConfig.BindPort = serfBindAddr.Port
 	config.EventCh = eventCh
 	config.SnapshotPath = snapshotPath
+	// TODO route Serf logs to logrus
+
 	serfCli, err := serf.Create(config)
 	if err != nil {
 		return nil, err
