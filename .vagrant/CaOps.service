@@ -7,4 +7,3 @@ ExecStart=/usr/local/bin/CaOps --config /etc/CaOps/CaOps.yaml serve
 
 [Install]
 WantedBy=multi-user.target
-Requires=cassandra.service
