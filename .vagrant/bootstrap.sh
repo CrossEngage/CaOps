@@ -34,7 +34,7 @@ then
 	# Repos
 	echo "deb http://www.apache.org/dist/cassandra/debian $CASSANDRA_RELEASE main" | \
 		sudo tee /etc/apt/sources.list.d/cassandra.sources.list
-	wget -O - https://www.apache.org/dist/cassandra/KEYS | sudo apt-key add -
+	wget -s -O - https://www.apache.org/dist/cassandra/KEYS | sudo apt-key add -
 
 	sudo apt-get update
 
@@ -52,7 +52,7 @@ then
 	sudo apt-get -y install openjdk-8-jdk
 
 	# Jolokia
-	wget "https://repo1.maven.org/maven2/org/jolokia/jolokia-jvm/$JOLOKIA_VERSION/jolokia-jvm-$JOLOKIA_VERSION-agent.jar" \
+	wget -q "https://repo1.maven.org/maven2/org/jolokia/jolokia-jvm/$JOLOKIA_VERSION/jolokia-jvm-$JOLOKIA_VERSION-agent.jar" \
 		-O /usr/share/java/jolokia-jvm-agent.jar
 
 	# Cassandra
@@ -63,6 +63,16 @@ then
 	# CaOps
 	sudo mkdir /etc/CaOps
 fi
+
+
+if [ ! -e /opt/hawtio.jar ]; then
+	wget -q https://oss.sonatype.org/content/repositories/public/io/hawt/hawtio-app/1.5.4/hawtio-app-1.5.4.jar -O /opt/hawtio.jar
+	sed -i '/exit 0/d' /etc/rc.local
+	echo 'nohup java -jar /opt/hawtio.jar --port 8090 2>&1 &' >> /etc/rc.local
+	echo 'exit 0' >> /etc/rc.local
+fi
+
+sudo /etc/rc.local
 
 diff -qs /tmp/default-cassandra /etc/default/cassandra
 DIFF_CASS_DEFAULT="$?"
